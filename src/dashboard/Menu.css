@@ -1,0 +1,21 @@
+/*mise en forme des boutons du menu*/
+.menu-button{
+    border:none;
+    text-align: left;
+    color: white;
+    font-weight: bold;
+}
+
+.menu{
+    background-color: black;
+}
+
+
+
+.bouton{
+    margin-top: 20%;
+    margin-left: 6%;
+    background-color: black;
+    margin-bottom: 55%;
+    
+}
