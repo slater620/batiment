@@ -2,10 +2,8 @@ import { API_URL } from '../authentification/Signup';
 import {useState} from 'react'
 import "./list.css"
 
-function ListProjet({setSpaceName,spaceName,update , setUpdate,itemToUpdate,setItemToUpdate , projetList,setProjetList}){
-
-    //etat contenant l'etat du modal
-    const [isShowing, setIsShowing] = useState(false);
+function ListProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, dataList,setDataList}){
+    
 
     //etat contenant la liste des éléments cochés de la liste
     const [checkedItems, setCheckedItems] = useState([])
@@ -19,7 +17,9 @@ function ListProjet({setSpaceName,spaceName,update , setUpdate,itemToUpdate,setI
     //etat contenant l'ID de l'élément de la liste sélectionné pour une action
     const [item, setItem] = useState('')
 
+    //variable contenant le token
     var token = localStorage.getItem("token")
+
 
     //fonction permettant de construire l'id du checkboxList d'un élément de la liste//
    function getCheckboxId(item){
@@ -44,7 +44,7 @@ function selectAll(){
         const tmpList = []
 
         //on coche tous les checkboxs
-        projetList.forEach(function(item){
+        dataList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = true
             tmpList.push(item['id'])
         })
@@ -54,7 +54,7 @@ function selectAll(){
         setCheckedItems([])
 
         //on décoche tous les checkboxs
-        projetList.forEach(function(item){
+        dataList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = false
         })
     }
@@ -111,7 +111,7 @@ function deleteItems(itemsList, checkedItemIndex){
                         return index !== deletedItemIndex
                     })
                     
-                    setProjetList(itemsList)
+                    setDataList(itemsList)
                     
 
                     deleteItems(itemsList, checkedItemIndex + 1)
@@ -144,23 +144,22 @@ function deleteItem(itemId){
         console.log("supprimer un")
             //succès de la suppression
             //on supprime l'élément de la liste des data*/
-            const deletedItemIndex = projetList.findIndex(item => item['id'] === itemId);
+            const deletedItemIndex = dataList.findIndex(item => item['id'] === itemId);
 
             if(deletedItemIndex > -1){
                 
                 //on retire l'élément supprimé de la liste
-                const itemsList = projetList.filter(function(value, index, arr){
+                const itemsList = dataList.filter(function(value, index, arr){
                     return index !== deletedItemIndex
                 })
                 
-                setProjetList(itemsList)
+                setDataList(itemsList)
             }
 
              //on vide la liste des éléments sélectionnés
             setCheckedItems([])
         }
 }
-
 
     //fonction permettant de récupérer la liste des projets
     function getProjets(){
@@ -176,7 +175,8 @@ function deleteItem(itemId){
         request.responseType = 'json';
         request.send(); 
         request.onload = function(){
-            setProjetList(request.response);
+            
+            setDataList(request.response);
         }           
      }
 
@@ -214,7 +214,7 @@ function deleteItem(itemId){
                     </thead>
                             <tbody>
                                 {
-                                    projetList.map((projet) => (
+                                    dataList.map((projet) => (
                                         <tr className="list-item no-gutters" key={projet['id']} id={projet['id']} 
                                             onMouseOver={()=>{
                                                 //on affiche le bouton de suppression de l'élément survolé
@@ -230,7 +230,8 @@ function deleteItem(itemId){
                                                 const parentTagName = event.target.parentElement.tagName
     
                                                 if(parentTagName === "TR" || parentTagName === "TD"){
-                                                    setItem(projet)
+                                                    setItemData(projet)
+                                                    
                                                     
                                                 }
                                                
@@ -288,9 +289,10 @@ function deleteItem(itemId){
             </div>   
             
            
-            {
+            { 
                 getProjets()
             }
+            
             {
                 tableauProjets()
             }
@@ -308,7 +310,7 @@ function deleteItem(itemId){
 
                                 if(checkedItems.length > 0){
                                     //on supprime les éléments sélectionnés
-                                    deleteItems(projetList, 0)
+                                    deleteItems(dataList, 0)
                                     document.getElementById('id01').style.display='none'
                                 }
                                 else{

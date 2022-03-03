@@ -1,22 +1,22 @@
 import './Menu.css'
-import { Link } from 'react-router-dom';
-function Menu(){    
+
+function Menu({spaceName,setSpaceName}){    
     
     return(
         <div className="col-2 menu"   style={{height:"120vh",width:"12vw"}}>
             <div className="row d-flex justify-content-center bouton" style={{marginTop:"45%"}} >
-                 <Link to="/dashboard" className="col-12 menu-button" style={{width:"14vw"}}>Projet</Link>
+                 <button  onClick={(event) => setSpaceName('listProjet') } className="col-12 menu-button" style={{width:"14vw"}}>Projet</button>
             </div>
 
             <div className="row d-flex justify-content-center bouton">
-                 <Link to="/dashboard/Tache/"  className="col-12 menu-button">Taches</Link>
+                 <button onClick={(event) => setSpaceName('listTache') }  className="col-12 menu-button">Taches</button>
             </div>
 
             <div className="row d-flex justify-content-center bouton">
-                <Link to="/dashboard/Stock" className="col-12 menu-button">Stocks</Link>
+                <button onClick={(event) => setSpaceName('listStock') } className="col-12 menu-button">Stocks</button>
             </div>
             <div className="row d-flex justify-content-center bouton">
-                 <Link to="/Stocks"className="col-12 menu-button">Logout</Link>
+                 <button  className="col-12 menu-button">Logout</button>
             </div>
         </div> 
   );

@@ -6,7 +6,7 @@ import "./signup.css"
 
 var validator = require("email-validator");
 var passwordValidator = require('password-validator');
-export const API_URL="https://appli-btp.herokuapp.com"
+export const API_URL="https://btp-api-gi.herokuapp.com"
 function Signup(){
 
     //etat pour contrôler l'affichage du message d'alerte pour le bon remplissage du formulaire
@@ -43,7 +43,7 @@ function Signup(){
       }
 
       if(firstname === ""){
-          setDisplayAlert(true)
+          setDisplayAlert(true) 
           setAlertMsg("Veuillez renseigner votre nom!")
           return false
       }
@@ -156,7 +156,7 @@ function Signup(){
               <button type="submit" className="btn btn-primary btn-block"
               onClick={(event) => CreateUser(event)}>Sign Up</button>
               <p className="forgot-password text-right">
-                Already registered <Link to="/signin"><a href="">sign in?</a></Link> 
+                Already registered <Link to="/"><a href="">sign in?</a></Link> 
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
-import "../Projet/form.css"
+import "./form.css"
 import { API_URL } from "../authentification/Signup"
-function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,projetList,setProjetList}){
+function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,dataList,setDataList}){
     
 //fonction de modification d'un projet
  function updateProjet(event){
@@ -40,8 +40,8 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,proje
        console.log('gooddd')
        console.log(request.response)
        //on remplace l'élément dans la liste des projets
-       const index = projetList.findIndex(projet => projet['id'] === itemToUpdate['id'])
-       setSpaceName('list')
+       const index = dataList.findIndex(projet => projet['id'] === itemToUpdate['id'])
+       setSpaceName('listProjet')
     }
     event.preventDefault();
 }
@@ -54,7 +54,7 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,proje
                         <label for="name">Name</label>
                     </div>
                     <div className="col-75">
-                        <input value={itemToUpdate['nom']} type="text" className="form-control" id="nomupdate" name="name" placeholder="name of project"/>
+                        <input  type="text" className="form-control" id="nomupdate" name="name" placeholder="name of project"/>
                     </div>
                 </div>
                 <div className="row form-group">
@@ -62,7 +62,7 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,proje
                         <label for="description">description</label>
                     </div>
                     <div class="col-75">
-                        <input value={ itemToUpdate['description'] } type="text" id="descriptionupdate" className="form-control" name="description" placeholder="description of project"/>
+                        <input  type="text" id="descriptionupdate" className="form-control" name="description" placeholder="description of project"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={(event) => updateProjet(event)} >Save</button>

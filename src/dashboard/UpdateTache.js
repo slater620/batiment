@@ -1,7 +1,7 @@
 import { API_URL } from "../authentification/Signup"
 import { useState } from "react"
-import "../Projet/form.css"
-function UpdateTache({setSpaceTacheName,spaceTacheName,itemToUpdate,setItemToUpdate,tacheList,setTacheList}){
+import "./form.css"
+function UpdateTache({setSpaceName,spaceTacheName,itemToUpdate,setItemToUpdate,dataList,setDataList}){
  
     const [projetList,setProjetList]= useState([])
     //fonction pour recuperer la liste des projets
@@ -35,7 +35,6 @@ function UpdateTache({setSpaceTacheName,spaceTacheName,itemToUpdate,setItemToUpd
    var  connected = window.navigator.onLine
     console.log('bonjour')
     //récupération des valeurs du formulaire
-    const user = localStorage.getItem("user")
     const nom = document.querySelector('#nameupdate').value
     const dateDebut = document.querySelector('#startdateupdate').value
     const dateFin = document.querySelector('#enddateupdate').value
@@ -60,7 +59,7 @@ function UpdateTache({setSpaceTacheName,spaceTacheName,itemToUpdate,setItemToUpd
         error = true
     }
     
-    var tache = {nom , dateDebut , dateFin , description,user,projet}
+    var tache = {nom ,projet, dateDebut , dateFin , description}
     tache = JSON.stringify((tache))
     var token = localStorage("token")
    var request = new XMLHttpRequest();
@@ -80,8 +79,8 @@ function UpdateTache({setSpaceTacheName,spaceTacheName,itemToUpdate,setItemToUpd
        console.log('gooddd')
        console.log(request.response)
        //on remplace l'élément dans la liste des taches
-       const index = tacheList.findIndex(tache => tache['id'] === itemToUpdate['id'])
-       setSpaceTacheName('listTache')
+       const index = dataList.findIndex(tache => tache['id'] === itemToUpdate['id'])
+       setSpaceName('listTache')
     }
     event.preventDefault();
 }

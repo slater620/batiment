@@ -1,12 +1,15 @@
 import { API_URL } from '../authentification/Signup'
 import {useState} from 'react'
-import "../Projet/list.css"
+import "./list.css"
 
-function ListTache({setSpaceTacheName,spaceTacheName,itemToUpdate,setItemToUpdate , tacheList, setTacheList}){
+function ListTache({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, dataList,setDataList}){
 
 
     //etat contenant la liste des éléments cochés de la liste
     const [checkedItems, setCheckedItems] = useState([])
+
+    //etat contenant le projet de la tache
+    var projet
      
     //etat contenant le message à afficher dans l'alerte de confirmation
     const [confirmAlertMsg, setConfirmAlertMsg] = useState('')
@@ -44,7 +47,7 @@ function selectAll(){
         const tmpList = []
 
         //on coche tous les checkboxs
-        tacheList.forEach(function(item){
+        dataList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = true
             tmpList.push(item['id'])
         })
@@ -54,7 +57,7 @@ function selectAll(){
         setCheckedItems([])
 
         //on décoche tous les checkboxs
-        tacheList.forEach(function(item){
+        dataList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = false
         })
     }
@@ -113,7 +116,7 @@ function deleteItems(itemsList, checkedItemIndex){
                         return index !== deletedItemIndex
                     })
                     
-                    setTacheList(itemsList)
+                    setDataList(itemsList)
                     
 
                     deleteItems(itemsList, checkedItemIndex + 1)
@@ -128,6 +131,7 @@ function deleteItems(itemsList, checkedItemIndex){
     }
 
 }
+
 
 //fonction permettant de supprimer un élément ayant son id//
 function deleteItem(itemId){
@@ -145,17 +149,17 @@ function deleteItem(itemId){
         console.log("supprimer un")
             //succès de la suppression
             //on supprime l'élément de la liste des data*/
-            const deletedItemIndex = tacheList.findIndex(item => item['id'] === itemId);
+            const deletedItemIndex = dataList.findIndex(item => item['id'] === itemId);
 
             if(deletedItemIndex > -1){
                 
                 //on retire l'élément supprimé de la liste
-                const itemsList = tacheList.filter(function(value, index, arr){
+                const itemsList = dataList.filter(function(value, index, arr){
                     return index !== deletedItemIndex
                 })
                 
-                setTacheList(itemsList)
-                console.log(tacheList)
+                setDataList(itemsList)
+                console.log(dataList)
             }
 
              //on vide la liste des éléments sélectionnés
@@ -178,10 +182,10 @@ function deleteItem(itemId){
         request.responseType = 'json';
         request.send(); 
         request.onload = function(){
-            setTacheList(request.response);
+            setDataList(request.response);
         }  
                  
-     }
+     } 
 
     function tableauTaches(){
         
@@ -194,9 +198,9 @@ function deleteItem(itemId){
                             <input type="checkbox" id="selectAll" title="tout sélectionner" value="1" onClick={selectAll}></input>
                         </th>
                         <th>Nom</th>
+                        <th>Description</th>
                         <th>Debut</th>
                         <th>Fin</th>
-                        <th>date de modification</th>
                         <th className="hover-pointer">
                             <a id="delete" style={{color:"black"}} onClick={() => {
                                 document.getElementById('id01').style.display='block'}}
@@ -217,7 +221,7 @@ function deleteItem(itemId){
                     </thead>
                             <tbody>
                                 {
-                                    tacheList.map((tache) => (
+                                    dataList.map((tache) => ( 
                                         <tr className="list-item no-gutters" key={tache['id']} id={tache['id']} 
                                             onMouseOver={()=>{
                                                 //on affiche le bouton de suppression de l'élément survolé
@@ -238,16 +242,17 @@ function deleteItem(itemId){
                                                 }
                                                
                                             }} >
+                    
                                             
                                             <td>
                                                 <span>
                                                     <input type="checkbox" id={getCheckboxId(tache)} onClick={(event)=>handleCheckboxClick(event)}></input>
                                                 </span>
                                             </td>
-                                            <td className="col-3 text"><span>{tache['nom']}</span></td>
-                                            <td className="col-2 text"><span>{tache['dateDebut']}</span></td>
-                                            <td className="col-2 text"><span>{tache['dateFin']}</span></td>
-                                            <td className="col-3 text"><span>{tache['updatedAt']}</span></td>
+                                            <td className="col-3 text">{tache['nom']}</td>
+                                            <td className="col-3 text">{tache['description']}</td>
+                                            <td className="col-2 text">{tache['dateDebut']}</td>
+                                            <td className="col-2 text">{tache['dateFin']}</td>
                                             <td className="col-1 vertical-center">
                                                 <a className="item-delete material-icons md-48 delete-icon" id={getDeleteButtonId(tache)}  title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
@@ -264,7 +269,7 @@ function deleteItem(itemId){
                                                 </a>
                                                 <a className="update-icon item-update" id={getUpdateButtonId(tache)}
                                                 onClick={(event) =>{
-                                                    setSpaceTacheName('updateTache')
+                                                    setSpaceName('updateTache')
                                                     
                                                     setItemToUpdate(tache)
                                                     event.preventDefault()
@@ -287,9 +292,9 @@ function deleteItem(itemId){
     <div className="container"> 
             <div className="row">
                 <div className="col"><h4 className="col-4" style={{marginTop:"1.5%",marginBottom:"1%"}}>Liste des Taches</h4></div>
-                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceTacheName('createTache')}>Creer une Tache</button></div>
+                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceName('createTache')}>Creer une Tache</button></div>
             </div>   
-            
+        
            
             {
                 getTaches()
@@ -311,7 +316,7 @@ function deleteItem(itemId){
 
                                 if(checkedItems.length > 0){
                                     //on supprime les éléments sélectionnés
-                                    deleteItems(tacheList, 0)
+                                    deleteItems(dataList, 0)
                                     document.getElementById('id01').style.display='none'
                                 }
                                 else{

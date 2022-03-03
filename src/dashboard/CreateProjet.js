@@ -52,7 +52,7 @@ function CreateProjet({setSpaceName,spaceName}){
 }
     return (
         <div className="container">
-            <h2 style={{textAlign:"center",marginTop:"1%"}}>CREER UN PROJET</h2>
+            <h2 style={{textAlign:"center",marginTop:"0.4%"}}>CREER UN PROJET</h2>
            <form>
                 <div className="row form-group">
                     <div className="col-25">

@@ -1,8 +1,8 @@
-import "../Projet/form.css"
+import "./form.css"
 import { API_URL } from "../authentification/Signup"
 import { useState } from "react"
 
-function CreateTache({setSpaceTacheName, spaceTacheName}){
+function CreateTache({setSpaceName, spaceName}){
     //variable contenant les tokens
     var token = localStorage.getItem("token")
 
@@ -39,7 +39,6 @@ function CreateTache({setSpaceTacheName, spaceTacheName}){
     //fonctions de creation d'une tache
     const createTaches = (event) => {
     //récupération des valeurs du formulaire
-    const user = localStorage.getItem("user")
     const nom = document.querySelector('#name').value
     const dateDebut = document.querySelector('#start-date').value
     const dateFin = document.querySelector('#end-date').value
@@ -64,7 +63,7 @@ function CreateTache({setSpaceTacheName, spaceTacheName}){
         error = true
     }
     
-    var tache = {nom , dateDebut , dateFin , description,user,projet}
+    var tache = {nom ,projet, dateDebut , dateFin , description}
     tache = JSON.stringify((tache))
 
     //création de la requête
@@ -79,17 +78,14 @@ function CreateTache({setSpaceTacheName, spaceTacheName}){
     console.log(request.status)
     console.log('avance')
     request.onload = function(){
-        console.log(request.response)
         const requestStatus = request.status
         
-        if(requestStatus === 500){
+        if(requestStatus === 403){
             server_error = true
           
 
         }else if(requestStatus === 201){
-            //requête réussie
-            console.log('gooddd')
-            setSpaceTacheName('list')
+            setSpaceName('listTache')
         }
     }
     event.preventDefault()

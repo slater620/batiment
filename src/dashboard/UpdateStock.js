@@ -1,7 +1,7 @@
-import "../Projet/form.css"
+import "./form.css"
 import { API_URL } from "../authentification/Signup"
 
-function UpdateStock({setSpaceStockName, spaceStockName,itemToUpdate,setItemToUpdate,stockList,setStockList}){
+function UpdateStock({setSpaceName, spaceName,itemToUpdate,setItemToUpdate,dataList,setDataList}){
 
     //variable qui signale la présence d'une erreur dans le formulaire
      var error = false
@@ -59,8 +59,8 @@ function UpdateStock({setSpaceStockName, spaceStockName,itemToUpdate,setItemToUp
             else if(requestStatus === 201){
                 //requête réussie
                 console.log('gooddd')
-                const index = stockList.findIndex(stock => stock['id'] === itemToUpdate['id'])
-                setSpaceStockName('listStock')
+                const index = dataList.findIndex(stock => stock['id'] === itemToUpdate['id'])
+                setSpaceName('listStock')
             }
             
         }
@@ -77,7 +77,7 @@ function UpdateStock({setSpaceStockName, spaceStockName,itemToUpdate,setItemToUp
                         <label >Name</label>
                     </div>
                     <div className="col-75">
-                        <input value={itemToUpdate['nom']} type="text" className="form-control" id="name" name="name" placeholder="name of stock"/>
+                        <input type="text" className="form-control" id="name" name="name" placeholder="name of stock"/>
                     </div>
                 </div>
                 <div className="row form-group">
@@ -85,7 +85,7 @@ function UpdateStock({setSpaceStockName, spaceStockName,itemToUpdate,setItemToUp
                         <label >quantity</label>
                     </div>
                     <div className="col-75">
-                        <input value={ itemToUpdate['quantite'] } type="number" id="quantity" className="form-control" name="quantity" placeholder="quantity of stock"/>
+                        <input type="number" id="quantity" className="form-control" name="quantity" placeholder="quantity of stock"/>
                     </div>
                 </div>
                 <div className="row form-group">
@@ -93,7 +93,7 @@ function UpdateStock({setSpaceStockName, spaceStockName,itemToUpdate,setItemToUp
                         <label >price</label>
                     </div>
                     <div className="col-75">
-                        <input value={ itemToUpdate['prix'] } type="number" className="form-control" id="price" name="price" placeholder="price of stock"/>
+                        <input  type="number" className="form-control" id="price" name="price" placeholder="price of stock"/>
                     </div>
                 </div>
                 <div className="row form-group"> 
@@ -101,7 +101,7 @@ function UpdateStock({setSpaceStockName, spaceStockName,itemToUpdate,setItemToUp
                         <label>supply date</label>
                     </div>
                     <div className="col-75">
-                        <input value={ itemToUpdate['dateApprovisionnement'] } type="date" className="form-control" id="date" name="date"/>
+                        <input  type="date" className="form-control" id="date" name="date"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary"  onClick={(event) => updateStock(event)}>Save</button>

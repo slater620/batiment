@@ -87,7 +87,7 @@ function Login(){
             alert("une erreur est survenu , veuillez reessayer");
           
         }
-        else if(requestStatus === 201){
+        else if(requestStatus === 200){
             //requête réussie
             console.log('gooddd')
             localStorage.setItem("token",request.response['accessToken'])
@@ -96,6 +96,12 @@ function Login(){
             history.push("/dashboard");
            
          }
+         console.log('gooddd')
+         localStorage.setItem("token",request.response['accessToken'])
+         localStorage.setItem("user",request.response['id'])
+         console.log(localStorage.getItem("token"))
+         history.push("/dashboard");
+        
     }
     
    }

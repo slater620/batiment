@@ -6,11 +6,16 @@ function App() {
   return (
     <BrowserRouter>
         <Switch>
-          <Route path="/dashboard" component={Home} />
-          <Route path="/dashboard/Tache" component={Home} />
-          <Route exact path="/signup" component={Signup} />
+         <Route exact path="/">
+            <Login/>
+         </Route>
+         <Route exact path="/signup">
+            <Signup/>
+         </Route>
+         <Route exact path="/dashboard">
+           <Home/>
+         </Route>
           <Route path="/dashboard/Stock" component={Home} />
-          <Route  path="" component={Login} />
         </Switch>
     </BrowserRouter>
   );

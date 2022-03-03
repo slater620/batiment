@@ -1,8 +1,8 @@
 import { API_URL } from '../authentification/Signup';
 import {useState} from 'react'
-import "../Projet/list.css"
+import "./list.css"
 
-function ListStock({setSpaceStockName,spaceStockName,update , setUpdate,itemToUpdate,setItemToUpdate , stockList,setStockList}){
+function ListStock({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, dataList,setDataList}){
 
     //etat contenant l'etat du modal
     const [isShowing, setIsShowing] = useState(false);
@@ -44,7 +44,7 @@ function selectAll(){
         const tmpList = []
 
         //on coche tous les checkboxs
-        stockList.forEach(function(item){
+        dataList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = true
             tmpList.push(item['id'])
         })
@@ -54,7 +54,7 @@ function selectAll(){
         setCheckedItems([])
 
         //on décoche tous les checkboxs
-        stockList.forEach(function(item){
+        dataList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = false
         })
     }
@@ -111,7 +111,7 @@ function deleteItems(itemsList, checkedItemIndex){
                         return index !== deletedItemIndex
                     })
                     
-                    setStockList(itemsList)
+                    setDataList(itemsList)
                     
 
                     deleteItems(itemsList, checkedItemIndex + 1)
@@ -144,16 +144,16 @@ function deleteItem(itemId){
         console.log("supprimer un")
             //succès de la suppression
             //on supprime l'élément de la liste des data*/
-            const deletedItemIndex = stockList.findIndex(item => item['id'] === itemId);
+            const deletedItemIndex = dataList.findIndex(item => item['id'] === itemId);
 
             if(deletedItemIndex > -1){
                 
                 //on retire l'élément supprimé de la liste
-                const itemsList = stockList.filter(function(value, index, arr){
+                const itemsList = dataList.filter(function(value, index, arr){
                     return index !== deletedItemIndex
                 })
                 
-                setStockList(itemsList)
+                setDataList(itemsList)
             }
 
              //on vide la liste des éléments sélectionnés
@@ -162,7 +162,7 @@ function deleteItem(itemId){
 }
 
 
-    //fonction permettant de récupérer la liste des projets
+    //fonction permettant de récupérer la liste des stocks
     function getStocks(){
  
          //construction de la requete
@@ -174,9 +174,11 @@ function deleteItem(itemId){
         request.setRequestHeader('Authorization' , 'Bearer ' + token);
         request.setRequestHeader('Content-Type' , 'application/json');
         request.responseType = 'json';
+        console.log('ree')
         request.send(); 
         request.onload = function(){
-            setStockList(request.response);
+            console.log('reponse')
+            setDataList(request.response);
         }           
      }
 
@@ -214,7 +216,7 @@ function deleteItem(itemId){
                     </thead>
                             <tbody>
                                 {
-                                    stockList.map((stock) => (
+                                    dataList.map((stock) => (
                                         <tr className="list-item no-gutters" key={stock['id']} id={stock['id']} 
                                             onMouseOver={()=>{
                                                 //on affiche le bouton de suppression de l'élément survolé
@@ -261,7 +263,7 @@ function deleteItem(itemId){
                                                 </a>
                                                 <a className="update-icon item-update" id={getUpdateButtonId(stock)}
                                                 onClick={(event) =>{
-                                                    setSpaceStockName('updateStock')
+                                                    setSpaceName('updateStock')
                                                     
                                                     setItemToUpdate(stock)
                                                     event.preventDefault()
@@ -284,7 +286,7 @@ function deleteItem(itemId){
     <div className="container"> 
             <div className="row">
                 <div className="col"><h4 className="col-4" style={{marginTop:"1.5%",marginBottom:"1%"}}>Liste des Stocks</h4></div>
-                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceStockName('createStock')}>Creer un Stock</button></div>
+                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceName('createStock')}>Creer un Stock</button></div>
             </div>   
             
            
@@ -308,7 +310,7 @@ function deleteItem(itemId){
 
                                 if(checkedItems.length > 0){
                                     //on supprime les éléments sélectionnés
-                                    deleteItems(stockList, 0)
+                                    deleteItems(dataList, 0)
                                     document.getElementById('id01').style.display='none'
                                 }
                                 else{
