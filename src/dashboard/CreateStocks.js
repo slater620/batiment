@@ -72,8 +72,11 @@ function CreateStock({setSpaceName, spaceName}){
 }
 
 //fonctions permettant de recuperer la liste des types
+
 function getType(){
+
     //création de la requête
+
     var requestURL = API_URL + "/Types/";
     var request = new XMLHttpRequest();
     request.open('GET', requestURL);
@@ -130,6 +133,7 @@ function getType(){
                         <input type="number" className="form-control" id="price" name="price" placeholder="price of stock"/>
                     </div>
                 </div>
+
                 <div className="row form-group"> 
                     <div className="col-25">
                         <label>supply date</label>
@@ -138,6 +142,7 @@ function getType(){
                         <input type="date" className="form-control" id="date" name="date"/>
                     </div>
                 </div>
+
                 <div className="row form-group"> 
                     <div className="col-25">
                         <label>type</label>
@@ -150,6 +155,7 @@ function getType(){
                         </select>
                     </div>
                 </div>
+
                 <button type="submit" className="btn btn-primary"  onClick={(event) => createStocks(event)}>Save</button>
             </form>
       </div>

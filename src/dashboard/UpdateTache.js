@@ -1,26 +1,8 @@
 import { API_URL } from "../authentification/Signup"
 import { useState } from "react"
 import "./form.css"
-function UpdateTache({setSpaceName,spaceTacheName,itemToUpdate,setItemToUpdate,dataList,setDataList}){
+function UpdateTache({setSpaceName,spaceTacheName,itemToUpdate,setItemToUpdate,tacheList,setTacheList,projetList,setProjetList}){
  
-    const [projetList,setProjetList]= useState([])
-    //fonction pour recuperer la liste des projets
-    function getProjets(){
- 
-        //construction de la requete
-       var requestUrl = API_URL +"/Projets"
-       //création de la requête
-       var request = new XMLHttpRequest();
-       request.open('GET', requestUrl);
-       var token = localStorage.getItem("token")
-       request.setRequestHeader('Authorization' , 'Bearer ' + token);
-       request.setRequestHeader('Content-Type' , 'application/json');
-       request.responseType = 'json';
-       request.send(); 
-       request.onload = function(){
-           setProjetList(request.response);
-       }           
-    }
     
 //fonction de modification d'une tache
  function updateTache(event){
@@ -79,7 +61,7 @@ function UpdateTache({setSpaceName,spaceTacheName,itemToUpdate,setItemToUpdate,d
        console.log('gooddd')
        console.log(request.response)
        //on remplace l'élément dans la liste des taches
-       const index = dataList.findIndex(tache => tache['id'] === itemToUpdate['id'])
+       const index = tacheList.findIndex(tache => tache['id'] === itemToUpdate['id'])
        setSpaceName('listTache')
     }
     event.preventDefault();
@@ -120,9 +102,6 @@ function UpdateTache({setSpaceName,spaceTacheName,itemToUpdate,setItemToUpdate,d
                         <input type="date" className="form-control" id="enddateupdate" name="end-date"/>
                     </div>
                 </div>
-                {
-                    getProjets()
-                }
                 <div className="row form-group"> 
                     <div className="col-25">
                         <label for="projet">projet</label>

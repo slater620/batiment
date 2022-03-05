@@ -2,7 +2,7 @@ import { API_URL } from '../authentification/Signup';
 import {useState} from 'react'
 import "./list.css"
 
-function ListProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, dataList,setDataList}){
+function ListProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, projetList,setProjetList}){
     
 
     //etat contenant la liste des éléments cochés de la liste
@@ -39,22 +39,25 @@ function getUpdateButtonId(item){
 //fonction permettant de sélectionner tous les éléments de la liste
 function selectAll(){
     const checked = document.getElementById('selectAll').checked
-    
+   
     if(checked){
         const tmpList = []
-
+        console.log('supromer')
         //on coche tous les checkboxs
-        dataList.forEach(function(item){
+        projetList.forEach(function(item){
+            console.log(item)
             document.getElementById(getCheckboxId(item)).checked = true
             tmpList.push(item['id'])
-        })
+
+        }
+        )
 
     }else{
         //on vide la liste des éléments cochés
         setCheckedItems([])
 
         //on décoche tous les checkboxs
-        dataList.forEach(function(item){
+        projetList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = false
         })
     }
@@ -69,6 +72,7 @@ function getItemIdFromCheckboxId(checkboxId){
 //fonction appelée lorqu'on clique sur un checkbox de la liste
 function handleCheckboxClick(event)
 {
+    console.log(event);
     var checked = event.target.checked;
 
     if(checked){
@@ -87,6 +91,7 @@ function handleCheckboxClick(event)
 
 //fonction pour supprimer la liste des projets sélectionnées//
 function deleteItems(itemsList, checkedItemIndex){
+    console.log('supprimer')
     if(checkedItemIndex < checkedItems.length){
         const itemId = checkedItems[checkedItemIndex]
         //création de la requête
@@ -100,23 +105,17 @@ function deleteItems(itemsList, checkedItemIndex){
         request.onload = function(){
             const requestStatus = request.status
             console.log('supprimer plusieurs')
-            
                 const deletedItemIndex = itemsList.findIndex(item => item['id'] === itemId);
-                
-
                 if(deletedItemIndex > -1){
                     
                     //on retire l'élément supprimé de la liste
                     itemsList = itemsList.filter(function(value, index, arr){
                         return index !== deletedItemIndex
                     })
-                    
-                    setDataList(itemsList)
-                    
-
+                    setProjetList(itemsList)
                     deleteItems(itemsList, checkedItemIndex + 1)
                 }
-            }
+             }
 
 
     }else{
@@ -144,16 +143,16 @@ function deleteItem(itemId){
         console.log("supprimer un")
             //succès de la suppression
             //on supprime l'élément de la liste des data*/
-            const deletedItemIndex = dataList.findIndex(item => item['id'] === itemId);
+            const deletedItemIndex = projetList.findIndex(item => item['id'] === itemId);
 
             if(deletedItemIndex > -1){
                 
                 //on retire l'élément supprimé de la liste
-                const itemsList = dataList.filter(function(value, index, arr){
+                const itemsList = projetList.filter(function(value, index, arr){
                     return index !== deletedItemIndex
                 })
                 
-                setDataList(itemsList)
+                setProjetList(itemsList)
             }
 
              //on vide la liste des éléments sélectionnés
@@ -176,7 +175,7 @@ function deleteItem(itemId){
         request.send(); 
         request.onload = function(){
             
-            setDataList(request.response);
+            setProjetList(request.response);
         }           
      }
 
@@ -214,7 +213,7 @@ function deleteItem(itemId){
                     </thead>
                             <tbody>
                                 {
-                                    dataList.map((projet) => (
+                                    projetList.map((projet) => (
                                         <tr className="list-item no-gutters" key={projet['id']} id={projet['id']} 
                                             onMouseOver={()=>{
                                                 //on affiche le bouton de suppression de l'élément survolé
@@ -231,7 +230,7 @@ function deleteItem(itemId){
     
                                                 if(parentTagName === "TR" || parentTagName === "TD"){
                                                     setItemData(projet)
-                                                    
+                                                    setSpaceName('detail')
                                                     
                                                 }
                                                
@@ -250,13 +249,13 @@ function deleteItem(itemId){
                                                 <a className="item-delete material-icons md-48 delete-icon" id={getDeleteButtonId(projet)}  title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
                                                     setCheckedItems([])
-
+                                                    setSelectedItemId(projet['id'])
+                                                    console.log(selectedItemId)
                                                     //affichage du popup de confirmation
                                                     document.getElementById(getDeleteButtonId(projet))
                                                     document.getElementById('id01').style.display='block'
-                                                    setConfirmAlertMsg("Voulez-vous supprimer le projet " + projet['nom'] + " ?")
                                                 
-                                                    setSelectedItemId(projet['id'])
+                                                    
                                                 }} style={{marginRight:"10px"}}>
                                                     <span className="material-icons md-48 delete-icon">delete</span>
                                                 </a>
@@ -288,11 +287,6 @@ function deleteItem(itemId){
                 <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceName('createProjet')}>Creer un projet</button></div>
             </div>   
             
-           
-            { 
-                getProjets()
-            }
-            
             {
                 tableauProjets()
             }
@@ -307,13 +301,15 @@ function deleteItem(itemId){
                     <div className="clearfix">
                       <button type="button" onClick={() => {document.getElementById('id01').style.display='none'}} className="cancelbtn">Cancel</button>
                       <button type="button" className="deletebtn" onClick={() => {
-
+                            console.log(checkedItems)
+                               
                                 if(checkedItems.length > 0){
                                     //on supprime les éléments sélectionnés
-                                    deleteItems(dataList, 0)
+                                    deleteItems(projetList, 0)
                                     document.getElementById('id01').style.display='none'
                                 }
                                 else{
+                                    console.log(selectedItemId);
                                     //on supprime l'élément sélectionné
                                     deleteItem(selectedItemId)
                                     document.getElementById('id01').style.display='none'

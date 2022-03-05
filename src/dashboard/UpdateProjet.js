@@ -1,6 +1,6 @@
 import "./form.css"
 import { API_URL } from "../authentification/Signup"
-function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,dataList,setDataList}){
+function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,projetList,setProjetList}){
     
 //fonction de modification d'un projet
  function updateProjet(event){
@@ -40,7 +40,7 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,dataL
        console.log('gooddd')
        console.log(request.response)
        //on remplace l'élément dans la liste des projets
-       const index = dataList.findIndex(projet => projet['id'] === itemToUpdate['id'])
+       const index = projetList.findIndex(projet => projet['id'] === itemToUpdate['id'])
        setSpaceName('listProjet')
     }
     event.preventDefault();

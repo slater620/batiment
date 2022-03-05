@@ -2,11 +2,9 @@ import "./form.css"
 import { API_URL } from "../authentification/Signup"
 import { useState } from "react"
 
-function CreateTache({setSpaceName, spaceName}){
+function CreateTache({setSpaceName, spaceName,projetList,setProjetList}){
     //variable contenant les tokens
     var token = localStorage.getItem("token")
-
-    const [projetList, setProjetList] = useState([])
 
     //variable qui signale la présence d'une erreur dans le formulaire
      var error = false
@@ -17,24 +15,7 @@ function CreateTache({setSpaceName, spaceName}){
     //variable indiquant si l'utilisa teur est connecté à internet
     var  connected = window.navigator.onLine
 
-    //fonction pour recuperer la liste des projets
-    function getProjets(){
- 
-        //construction de la requete
-       var requestUrl = API_URL +"/Projets"
-       //création de la requête
-       var request = new XMLHttpRequest();
-       request.open('GET', requestUrl);
-       token = localStorage.getItem("token")
-       request.setRequestHeader('Authorization' , 'Bearer ' + token);
-       request.setRequestHeader('Content-Type' , 'application/json');
-       request.responseType = 'json';
-       request.send(); 
-       request.onload = function(){
-           setProjetList(request.response);
-       }           
-    }
-
+   
 
     //fonctions de creation d'une tache
     const createTaches = (event) => {
@@ -130,9 +111,7 @@ function CreateTache({setSpaceName, spaceName}){
                         <input type="date" className="form-control" id="end-date" name="end-date"/>
                     </div>
                 </div>
-                {
-                    getProjets()
-                }
+                
                 <div className="row form-group"> 
                     <div className="col-25">
                         <label for="projet">projet</label>

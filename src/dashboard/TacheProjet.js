@@ -2,14 +2,12 @@ import { API_URL } from '../authentification/Signup'
 import {useState} from 'react'
 import "./list.css"
 
-function ListTache({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, tacheList,setTacheList}){
+function TacheProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, tacheList,setTacheList}){
 
 
     //etat contenant la liste des éléments cochés de la liste
     const [checkedItems, setCheckedItems] = useState([])
 
-    //etat contenant le projet de la tache
-    var projet
      
     //etat contenant le message à afficher dans l'alerte de confirmation
     const [confirmAlertMsg, setConfirmAlertMsg] = useState('')
@@ -120,7 +118,7 @@ function deleteItems(itemsList, checkedItemIndex){
                     
 
                     deleteItems(itemsList, checkedItemIndex + 1)
-                }
+                 }
             }
 
 
@@ -169,10 +167,10 @@ function deleteItem(itemId){
 
 
     //fonction permettant de récupérer la liste des taches
-    function getTaches(){
+    function getTaches(itemId){
  
          //construction de la requete
-        var requestUrl = API_URL +"/Taches"
+        var requestUrl = API_URL +"/Taches/projet/" + itemId + "/"
         //création de la requête
         var request = new XMLHttpRequest();
         request.open('GET', requestUrl);
@@ -211,7 +209,7 @@ function deleteItem(itemId){
                         <th>
                         <span className="hover-pointer fa fa-refresh" title="rafraîchir" style={{fontSize:"x-large"}} onClick={() =>{
                                 //on rafraîchi la liste
-                                getTaches()
+                                getTaches(itemData['id'])
                                 
                             }}></span>
                         </th>
@@ -291,9 +289,10 @@ function deleteItem(itemId){
    return (
     <div className="container"> 
             <div className="row">
-                <div className="col"><h4 className="col-4" style={{marginTop:"1.5%",marginBottom:"1%"}}>Liste des Taches</h4></div>
-                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceName('createTache')}>Creer une Tache</button></div>
+                <h2> Liste des Taches de {itemData['nom']}</h2>
+               
             </div>   
+        
             {
                 tableauTaches()
             }
@@ -330,4 +329,4 @@ function deleteItem(itemId){
     </div>
 );
 }
-export default ListTache;
+export default TacheProjet;
