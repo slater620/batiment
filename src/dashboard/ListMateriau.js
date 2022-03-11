@@ -1,16 +1,19 @@
-import { API_URL } from '../authentification/Signup'
+import { API_URL } from '../authentification/Signup';
 import {useState} from 'react'
 import "./list.css"
 
-function ListTache({materiauList,setMateriauList,materielList,setMaterielList,setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, tacheList,setTacheList}){
+function ListMateriau({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, materiauList,setMateriauList}){
 
+     //variable qui signale la présence d'une erreur dans le formulaire
+     var error = false
+    //variable qui signale la présence d'une erreur au niveau du serveur
+     var server_error = false
+    //variable indiquant si l'utilisateur est connecté à internet
+    var  connected = window.navigator.onLine
 
     //etat contenant la liste des éléments cochés de la liste
     const [checkedItems, setCheckedItems] = useState([])
-
-    //etat contenant le stock
-    const [stockList, setStockList]= useState([])
-     
+    
     //etat contenant le message à afficher dans l'alerte de confirmation
     const [confirmAlertMsg, setConfirmAlertMsg] = useState('')
  
@@ -21,54 +24,6 @@ function ListTache({materiauList,setMateriauList,materielList,setMaterielList,se
     const [item, setItem] = useState('')
 
     var token = localStorage.getItem("token")
-    
-    //fonctions d'allocation
-    const Allouer = (event) => {
-    //récupération des valeurs du formulaire
-    const quantite = document.querySelector('#quantiteallouer').value
-    const  stock = document.querySelector('#stockallouer').value
-    const tache = itemData['id']
-    if(quantite === ""){
-        var error = true
-        alert('erreur au niveau du formulaire')
-    }
-
-    if(stock === ""){
-        var error = true
-        alert('erreur au niveau du formulaire')
-    }
-    var allouer = {quantite,tache, stock}
-    allouer = JSON.stringify((allouer))
-
-    //création de la requête
-    var requestURL = API_URL + "/Allocations/";
-    var request = new XMLHttpRequest();
-    request.open('POST', requestURL);
-    request.setRequestHeader('Authorization' , 'Bearer ' + token);
-    request.setRequestHeader('Content-Type' , 'application/json');
-    request.responseType = 'json';
-    request.send(allouer);
-    console.log(allouer)
-    console.log(request.status)
-    console.log('avance')
-    request.onload = function(){
-        const requestStatus = request.status
-        
-        if(requestStatus === 403){
-            var server_error = true
-          
-
-        }else if(requestStatus === 201){
-            console.log('good')
-            alert('success')
-        }
-        else if(requestStatus === 200){
-                alert('success')
-        }
-    }
-    event.preventDefault()
-
-}
 
     //fonction permettant de construire l'id du checkboxList d'un élément de la liste//
    function getCheckboxId(item){
@@ -85,17 +40,75 @@ function getUpdateButtonId(item){
     return 'updateButton_' + item['id']
 }
 
-//fonction permettant de sélectionner tous les éléments de la liste
+//fonction permettant de construire l'id du bouton de commande d'un élément//
+function getCommandeButtonId(item){
+    return 'commandeButton_' + item['id']
+}
 
+
+//fonctions de creation
+const createCommande = (event) => {
+    //récupération des valeurs du formulaire
+    var user = localStorage.getItem("user")
+    const quantite = document.querySelector('#quantitecommande').value
+    const prix = document.querySelector('#prixcommande').value
+    const dateCommande = document.querySelector('#datecommande').value     
+    const dateArrivee = document.querySelector('#datearrivee').value 
+    const stock =  itemData['id']
+      
+    if(!connected){
+        error = true            
+    }
+    if(quantite === ""){
+        error = true
+    }
+    
+    if(dateCommande === ""){
+        error = true
+    }
+    if(dateArrivee === ""){
+        error = true
+    }
+    var commande = {  prix , quantite ,dateArrivee, dateCommande,user,stock}
+    commande = JSON.stringify(commande)
+    //création de la requête
+    var requestURL = API_URL + "/Commandes/";
+    var request = new XMLHttpRequest();
+    request.open('POST', requestURL);
+    request.setRequestHeader('Content-Type' , 'application/json');
+    request.setRequestHeader('Authorization' , 'Bearer ' + token);
+    request.responseType = 'json';
+    request.send(commande);
+    console.log(request.status)
+    console.log(commande);
+    request.onload = function(){
+        
+        const requestStatus = request.status
+        
+        if(requestStatus === 403){
+            server_error = true
+                
+
+        }else if(requestStatus === 201){
+            //requête réussie
+            console.log('gooddd')
+            console.log('commande')
+            
+        }
+    }
+    event.preventDefault()
+}
+
+
+//fonction permettant de sélectionner tous les éléments de la liste
 function selectAll(){
     const checked = document.getElementById('selectAll').checked
     
     if(checked){
-
         const tmpList = []
 
         //on coche tous les checkboxs
-        tacheList.forEach(function(item){
+        materiauList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = true
             tmpList.push(item['id'])
         })
@@ -105,10 +118,11 @@ function selectAll(){
         setCheckedItems([])
 
         //on décoche tous les checkboxs
-        tacheList.forEach(function(item){
+        materiauList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = false
         })
     }
+    console.log(checkedItems)
 }
 
 //fonction permettant de retrouver l'id d'un élément à partir de l'id du checkbox correspondant//
@@ -136,14 +150,13 @@ function handleCheckboxClick(event)
     }
 }
 
-
-//fonction pour supprimer la liste des taches sélectionnées//
-
+//fonction pour supprimer la liste des materiaux sélectionnées//
 function deleteItems(itemsList, checkedItemIndex){
     if(checkedItemIndex < checkedItems.length){
         const itemId = checkedItems[checkedItemIndex]
+        const  quantite = document.querySelector('#quantitesupprimer').value 
         //création de la requête
-        var requestURL = API_URL +"/Taches/" + itemId + "/"
+        var requestURL = API_URL +"/Stocks/" + itemId + "/"+ quantite + "/"
         var request = new XMLHttpRequest();
         request.open('DELETE', requestURL);
         request.setRequestHeader('Authorization' , 'Bearer ' + token);
@@ -158,18 +171,16 @@ function deleteItems(itemsList, checkedItemIndex){
                 
 
                 if(deletedItemIndex > -1){
+        
                     
-                    //on retire l'élément supprimé de la liste
-                    itemsList = itemsList.filter(function(value, index, arr){
-                        return index !== deletedItemIndex
-                    })
-                    
-                    setTacheList(itemsList)
+                    setMateriauList(itemsList)
+                   
                     
 
                     deleteItems(itemsList, checkedItemIndex + 1)
                 }
             }
+            
 
 
     }else{
@@ -180,12 +191,12 @@ function deleteItems(itemsList, checkedItemIndex){
 
 }
 
-
 //fonction permettant de supprimer un élément ayant son id//
 function deleteItem(itemId){
+    const  quantite = document.querySelector('#quantitesupprimer').value 
     //création de la requête
-    var requestURL = API_URL +"/Taches/" + itemId + "/"
-    var request = new XMLHttpRequest();    
+    var requestURL = API_URL +"/Stocks/" + itemId + "/"+ quantite + "/"
+    var request = new XMLHttpRequest();
     request.open('DELETE', requestURL);
     request.setRequestHeader('Authorization' , 'Bearer ' + token);
     request.setRequestHeader('Content-Type' , 'application/json');
@@ -195,20 +206,7 @@ function deleteItem(itemId){
         const requestStatus = request.status
         console.log(request.response)
         console.log("supprimer un")
-            //succès de la suppression
-            //on supprime l'élément de la liste des data*/
-            const deletedItemIndex = tacheList.findIndex(item => item['id'] === itemId);
 
-            if(deletedItemIndex > -1){
-                
-                //on retire l'élément supprimé de la liste
-                const itemsList = tacheList.filter(function(value, index, arr){
-                    return index !== deletedItemIndex
-                })
-                
-                setTacheList(itemsList)
-                console.log(tacheList)
-            }
 
              //on vide la liste des éléments sélectionnés
             setCheckedItems([])
@@ -216,11 +214,11 @@ function deleteItem(itemId){
 }
 
 
-    //fonction permettant de récupérer la liste des taches
-    function getTaches(){
+    //fonction permettant de récupérer la liste des stocks
+    function getStocks(){
  
          //construction de la requete
-        var requestUrl = API_URL +"/Taches"
+        var requestUrl = API_URL +"/Stocks"
         //création de la requête
         var request = new XMLHttpRequest();
         request.open('GET', requestUrl);
@@ -228,14 +226,26 @@ function deleteItem(itemId){
         request.setRequestHeader('Authorization' , 'Bearer ' + token);
         request.setRequestHeader('Content-Type' , 'application/json');
         request.responseType = 'json';
+        console.log('ree')
         request.send(); 
         request.onload = function(){
-            setTacheList(request.response);
-        }  
-                 
-     } 
+            if (request.status===500) {
+                alert('erreur au niveau du serveur')
+                
+            }
+            if (request.status===200) {
+            var itemList= request.response
+            itemList =  itemList.filter(item => item['type']==="Materiau")
+            console.log(itemList)
+            setMateriauList(itemList)
+             
+            }
+           
+ 
+        }           
+     }
 
-    function tableauTaches(){
+    function tableauStocks(){
         
          return(
              <div>
@@ -245,20 +255,20 @@ function deleteItem(itemId){
                         <th className="col-1 text bold" style={{paddingLeft:"15px"}}>
                             <input type="checkbox" id="selectAll" title="tout sélectionner" value="1" onClick={selectAll}></input>
                         </th>
-                        <th>Nom</th>
-                        <th>Description</th>
-                        <th>Debut</th>
-                        <th>Fin</th>
-                        <th className="hover-pointer">
-                            <a id="delete" data-toggle="modal" data-target="#myModal"  style={{color:"black"}} onClick={() => {  setConfirmAlertMsg("Voulez-vous supprimer les taches selectionnées  ?")}}
+                        <th scope="col">Nom</th>
+                        <th scope="col">quantite</th>
+                        <th scope="col" >date d'approvisionnement</th>
+                        <th scope="col">date de modification</th>
+                        <th className="hover-pointer" scope="col">
+                            <a id="delete" style={{color:"black"}} data-toggle="modal" data-target="#myModal" style={{color:"black"}}  onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les materiaux selectionnés?')}
                                     style={{marginRight:"10px"}}>
                                 <span className="material-icons md-48" title="supprimer">delete</span>
                             </a>
                         </th>
-                        <th>
+                        <th scope="col">
                         <span className="hover-pointer fa fa-refresh" title="rafraîchir" style={{fontSize:"x-large"}} onClick={() =>{
                                 //on rafraîchi la liste
-                                getTaches()
+                                getStocks()
                                 
                             }}></span>
                         </th>
@@ -268,69 +278,69 @@ function deleteItem(itemId){
                     </thead>
                             <tbody>
                                 {
-                                    tacheList.map((tache) => ( 
-                                        <tr className="list-item no-gutters" key={tache['id']} id={tache['id']} 
+                                    materiauList.map((materiau) => (
+                                        <tr className="list-item no-gutters" key={materiau['id']} id={materiau['id']} 
                                             onMouseOver={()=>{
                                                 //on affiche le bouton de suppression de l'élément survolé
-                                                document.getElementById(getDeleteButtonId(tache)).style.visibility = "visible"
-                                                document.getElementById(getUpdateButtonId(tache)).style.visibility = "visible"
-                                                document.getElementById('buttonallouer').style.visibility = "visible"
+                                                document.getElementById(getDeleteButtonId(materiau)).style.visibility = "visible"
+                                                document.getElementById(getUpdateButtonId(materiau)).style.visibility = "visible"
+                                                document.getElementById(getCommandeButtonId(materiau)).style.visibility = "visible"
                                             }}
                                             onMouseOut={() =>{
                                                 //on retire le bouton de suppression de l'élément survolé
-                                                document.getElementById(getDeleteButtonId(tache)).style.visibility = "hidden"
-                                                document.getElementById(getUpdateButtonId(tache)).style.visibility = "hidden"
-                                                document.getElementById('buttonallouer').style.visibility = "hidden"
+                                                document.getElementById(getDeleteButtonId(materiau)).style.visibility = "hidden"
+                                                document.getElementById(getUpdateButtonId(materiau)).style.visibility = "hidden"
+                                                document.getElementById(getCommandeButtonId(materiau)).style.visibility = "hidden"
                                             }}
                                             onClick={(event)=>{
                                                 const parentTagName = event.target.parentElement.tagName
     
                                                 if(parentTagName === "TR" || parentTagName === "TD"){
-                                                    setItem(tache)
-                                                    
+                                                    setItem(materiau)
                                                     
                                                 }
                                                
                                             }} >
-                    
                                             
                                             <td>
                                                 <span>
-                                                    <input type="checkbox" id={getCheckboxId(tache)} onClick={(event)=>handleCheckboxClick(event)}></input>
+                                                    <input type="checkbox" id={getCheckboxId(materiau)} onClick={(event)=>handleCheckboxClick(event)}></input>
                                                 </span>
                                             </td>
-                                            <td className="col-3 text">{tache['nom']}</td>
-                                            <td className="col-3 text">{tache['description']}</td>
-                                            <td className="col-2 text">{tache['dateDebut']}</td>
-                                            <td className="col-2 text">{tache['dateFin']}</td>
+                                            <td className="col-3 text">{materiau['nom']}</td>
+                                            <td className="col-2 text">{materiau['quantite']}</td>
+                                            <td className="col-2 text">{materiau['dateApprovisionnement']}</td>
+                                            <td className="col-3 text">{materiau['updatedAt']}</td>
                                             <td className="col-1 vertical-center">
-                                                <a className="item-delete material-icons md-48 delete-icon" data-toggle="modal" data-target="#myModal"  id={getDeleteButtonId(tache)}  title="supprimer" onClick={(event) =>{
+                                                <a className="item-delete material-icons md-48 delete-icon"  data-toggle="modal" data-target="#myModal" id={getDeleteButtonId(materiau)}  title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
                                                     setCheckedItems([])
 
                                                     //affichage du popup de confirmation
-                                                    document.getElementById(getDeleteButtonId(tache))
-                            
-                                                    setConfirmAlertMsg("Voulez-vous supprimer la tache " + tache['nom'] + " ?")
+                                                    document.getElementById(getDeleteButtonId(materiau))
+                                                   
+                                                    setConfirmAlertMsg("Voulez-vous supprimer le materiau " + materiau['nom'] + " ?")
                                                 
-                                                    setSelectedItemId(tache['id'])
+                                                    setSelectedItemId(materiau['id'])
                                                 }} style={{marginRight:"10px"}}>
                                                     <span className="material-icons md-48 delete-icon">delete</span>
                                                 </a>
-                                                <a className="update-icon item-update" id={getUpdateButtonId(tache)}
+                                                <a className="update-icon item-update" id={getUpdateButtonId(materiau)}
                                                 onClick={(event) =>{
-                                                    setSpaceName('updateTache')
+                                                    setSpaceName('updateMateriau')
                                                     
-                                                    setItemToUpdate(tache)
+                                                    setItemToUpdate(materiau)
                                                     event.preventDefault()
                                                 }}>
                                                     <span className="material-icons md-48 delete-icon">edit</span>
                                                 </a>
-                                                <a   data-toggle="modal" id='buttonallouer'  data-target="#allouer" className="add-icon" href="#" title='allouer'
-                                                     onClick={(event) =>{ setItemData(tache) ; event.preventDefault()}}>
-                                                    <span className="material-icons md-48 ">allouer</span></a>
                                                 
-                                            </td>
+                                                <a   data-toggle="modal" id={getCommandeButtonId(materiau)} data-target="#commande" className="add-icon item-add" href="#" title='commander'
+                                                     onClick={(event) =>{ setItemData(materiau) ; event.preventDefault()}}>
+                                                    <span className="material-icons md-48 ">add</span></a> 
+                                        </td>
+                                            
+                
                                         </tr>
                                         ))
                                 }
@@ -344,16 +354,16 @@ function deleteItem(itemId){
    return (
     <div className="container"> 
             <div className="row">
-                <div className="col"><h4 className="col-4" style={{marginTop:"1.5%",marginBottom:"1%"}}>Liste des Taches</h4></div>
-                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceName('createTache')}>Creer une Tache</button></div>
+                <div className="col"><h4 className="col-4" style={{marginTop:"1.5%",marginBottom:"1%"}}>Liste des Materiaux</h4></div>
+                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceName('createMateriau')}>Creer un Materiau</button></div>
             </div>   
             {
-                tableauTaches()
+                tableauStocks()
             }
             {
                
                <div id="myModal" className="modal fade" role="dialog">
-                 <div class="modal-dialog">
+                 <div className="modal-dialog">
                
                    
                    <div className="modal-content">
@@ -363,6 +373,16 @@ function deleteItem(itemId){
                      </div>
                      <div className="modal-body">
                        <p> {confirmAlertMsg} </p>
+                       <form >
+                            <div className="row form-group">
+                                    <div className="col-25">
+                                        <label >quantité</label>
+                                    </div>
+                                    <div className="col-75">
+                                        <input type="number" id="quantitesupprimer" className="form-control" placeholder="quantité a suprimmer"/>
+                                    </div>
+                            </div>
+                       </form>
                      </div>
                      <div className="modal-footer row">
                        <div className='col'>
@@ -371,7 +391,7 @@ function deleteItem(itemId){
                                            
                                                if(checkedItems.length > 0){
                                                    //on supprime les éléments sélectionnés
-                                                   deleteItems(tacheList, 0)
+                                                   deleteItems(materiauList, 0)
                                                
                                                }
                                                else{
@@ -394,13 +414,13 @@ function deleteItem(itemId){
            }
            {
                
-               <div id="allouer" className="modal fade" role="dialog">
+               <div id="commande" className="modal fade" role="dialog">
                  <div className="modal-dialog">
                    
                    <div className="modal-content">
                      <div className="modal-header">
                        <span style={{display:"none"}}>&times;</span>
-                       <h4 style={{ marginLeft:'40%' }} className="modal-title">Allocation </h4>
+                       <h4 style={{ marginLeft:'40%' }} className="modal-title">Commander </h4>
                      </div>
                        
                             <form >
@@ -410,26 +430,38 @@ function deleteItem(itemId){
                                             <label >quantité</label>
                                         </div>
                                         <div className="col-75">
-                                            <input type="number" id="quantiteallouer" className="form-control" placeholder="quantité a allouer"/>
+                                            <input type="number" id="quantitecommande" className="form-control" placeholder="quantité a commander"/>
+                                        </div>
+                                    </div>
+                                    <div className="row form-group">
+                                        <div className="col-25">
+                                            <label >prix</label>
+                                        </div>
+                                        <div className="col-75">
+                                            <input type="number" className="form-control" id="prixcommande"  placeholder="prix de la commande"/>
                                         </div>
                                     </div>
                                     <div className="row form-group"> 
                                         <div className="col-25">
-                                            <label for="stockallouer">stock</label>
+                                            <label>date de commande</label>
                                         </div>
-                                        <div class="col-75">
-                                            <select id="stockallouer" className="form-control select-input">
-                                                {
-                                                    stockList.map((stock) => <option value={stock['id']} key={stock['id']}>{stock['nom']}</option>)
-                                                }
-                                            </select>
+                                        <div className="col-75">
+                                            <input type="date" className="form-control" id="datecommande" />
+                                        </div>
+                                    </div>
+                                    <div className="row form-group"> 
+                                        <div className="col-25">
+                                            <label>date d'arrivée</label>
+                                        </div>
+                                        <div className="col-75">
+                                            <input type="date" className="form-control" id="datearrivee" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="modal-footer row">
                                     <div className='col'>
-                                        <button type="submit" data-dismiss="modal" className="deletebtn" onClick={(event) => {Allouer(event)}}>commander</button>
+                                        <button type="submit" data-dismiss="modal" className="deletebtn" onClick={(event) => {createCommande(event)}}>commander</button>
                                     </div>
                                     <div className='col'>
                                         <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
@@ -446,4 +478,4 @@ function deleteItem(itemId){
     </div>
 );
 }
-export default ListTache;
+export default ListMateriau;

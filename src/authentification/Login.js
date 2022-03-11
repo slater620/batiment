@@ -38,12 +38,14 @@ function Login(){
     if(email === "" || !validator.validate(email)){
         setDisplayAlert(true)
         setAlertMsg("Veuillez Entrer une adresse mail valide!")
+        alert(alertMsg)
         return false
     }
 
     if(password === ""){
         setDisplayAlert(true)
         setAlertMsg("Veuillez renseigner le champ mot de passe!")
+        alert(alertMsg)
         return false
 
     }else{
@@ -52,6 +54,7 @@ function Login(){
         if(password_validation.length){
             setDisplayAlert(true)
             setAlertMsg("mot de passe pas reglementaire")
+            alert(alertMsg)
             return false
         }
     }
@@ -63,10 +66,11 @@ function Login(){
 //function to login
 
   function LoginUser(event){
-    
+
 
    //recuperation des parametres valides
    var user = formValidation()
+   
    if (user) {
      //construction de la requete
    var requestUrl = API_URL +"/auth"
@@ -87,25 +91,22 @@ function Login(){
             alert("une erreur est survenu , veuillez reessayer");
           
         }
-        else if(requestStatus === 200){
+        else if(requestStatus === 201){
             //requête réussie
             console.log('gooddd')
             localStorage.setItem("token",request.response['accessToken'])
             localStorage.setItem("user",request.response['id'])
             console.log(localStorage.getItem("token"))
             history.push("/dashboard");
+            alert('connection réussie')
            
          }
-         console.log('gooddd')
-         localStorage.setItem("token",request.response['accessToken'])
-         localStorage.setItem("user",request.response['id'])
-         console.log(localStorage.getItem("token"))
-         history.push("/dashboard");
+        
         
     }
     
    }
-   event.preventDefault()
+  event.preventDefault()
   
 }
 
@@ -160,7 +161,9 @@ function Login(){
               </form>
             </div>
           </div>
+          
         </div>
+        
       );
 }
 export default Login;

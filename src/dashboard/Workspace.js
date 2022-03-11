@@ -5,17 +5,17 @@ import UpdateProjet from './UpdateProjet';
 import ListTache from './ListTache';
 import CreateTache from './CreateTache';
 import UpdateTache from './UpdateTache';
-import ListStock from './ListStock';
-import UpdateStock from './UpdateStock';
-import CreateStock from './CreateStocks';
+import ListMateriau from './ListMateriau';
+import UpdateMateriau from './UpdateMateriau';
+import CreateMateriau from './CreateMateriau';
 import ListCommande from './ListCommande';
-import CreateCommande from './CreateCommande';
+import ListMateriel from './ListMateriel'
+import CreateMateriel from './CreateMateriel'
+import UpdateMateriel from './UpdateMateriel';
 import UpdateCommande from './UpdateCommande';
 import TacheProjet from './TacheProjet'; 
 
 function Workspace({spaceName,setSpaceName}){
-
-    
 
     //etat contenant la liste  des projets
     const [projetList, setProjetList] = useState([])
@@ -25,7 +25,8 @@ function Workspace({spaceName,setSpaceName}){
 
     
     //etat contenant la liste  des stocks
-    const [stockList, setStockList] = useState([])
+    const [materielList,setMaterielList]= useState([])
+    const [materiauList, setMateriauList] = useState([])
 
     //etat contenant un item precis
     const [itemData, setItemData] = useState('')
@@ -60,30 +61,40 @@ function Workspace({spaceName,setSpaceName}){
                 break;
 
         
-        case 'listStock':
-            return <ListStock itemData={ itemData } setItemData={setItemData} setStockList={ setStockList } stockList={stockList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
+        case 'listMateriau':
+            return <ListMateriau  setMaterielList={ setMaterielList } materielList={ materielList} itemData={ itemData } setItemData={setItemData} setMateriauList={ setMateriauList } materiauList={ materiauList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
 
-        case 'createStock':
-            return <CreateStock spaceName= {spaceName} setSpaceName={setSpaceName} />
+        case 'createMateriau':
+            return <CreateMateriau spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
             
-        case 'updateStock':
-            return <UpdateStock  setStockList={ setStockList } stockList={stockList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
+        case 'updateMateriau':
+            return <UpdateMateriau setMateriauList={ setMateriauList } materiauList={ materiauList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
+            break;
+        
+        case 'listMateriel':
+            return <ListMateriel itemData={ itemData } setItemData={setItemData} setMaterielList={ setMaterielList } materielList={ materielList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
+            break;
+    
+        case 'createMateriel':
+            return <CreateMateriel spaceName= {spaceName} setSpaceName={setSpaceName} />
+            break;
+                
+        case 'updateMateriel':
+            return <UpdateMateriel setMaterielList={ setMaterielList } materielList={ materielList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
 
 
         case 'listCommande':
             return <ListCommande itemData={ itemData } setItemData={setItemData}  setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
-        case 'createCommande':
-            return <CreateCommande spaceName= {spaceName} setSpaceName={setSpaceName} />
-            break;
+
         case 'updateCommande':
             return <UpdateCommande spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
+        
         default:
-            break;
     }
 }
 export default Workspace;

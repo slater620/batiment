@@ -194,9 +194,8 @@ function deleteItem(itemId){
                         <th scope="col" >date de creation</th>
                         <th scope="col">date de modification</th>
                         <th className="hover-pointer" scope="col">
-                            <a id="delete" style={{color:"black"}} onClick={() => {
-                                document.getElementById('id01').style.display='block'}}
-                                    style={{marginRight:"10px"}}>
+                            <a id="delete"  data-toggle="modal" data-target="#myModal" style={{color:"black"}}  onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les projets selectionnés?')}
+                                    style={{marginRight:"10px"}} >
                                 <span className="material-icons md-48" title="supprimer">delete</span>
                             </a>
                         </th>
@@ -246,14 +245,15 @@ function deleteItem(itemId){
                                             <td className="col-2 text">{projet['createdAt']}</td>
                                             <td className="col-3 text">{projet['updatedAt']}</td>
                                             <td className="col-1 vertical-center">
-                                                <a className="item-delete material-icons md-48 delete-icon" id={getDeleteButtonId(projet)}  title="supprimer" onClick={(event) =>{
+                                                <a className="item-delete material-icons md-48 delete-icon" data-toggle="modal" data-target="#myModal" id={getDeleteButtonId(projet)}   title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
                                                     setCheckedItems([])
                                                     setSelectedItemId(projet['id'])
                                                     console.log(selectedItemId)
                                                     //affichage du popup de confirmation
                                                     document.getElementById(getDeleteButtonId(projet))
-                                                    document.getElementById('id01').style.display='block'
+                                                    //document.getElementById('id01').style.display='block'
+                                                    setConfirmAlertMsg('voulez vous supprimer le projet :' + projet['nom'] + '?')
                                                 
                                                     
                                                 }} style={{marginRight:"10px"}}>
@@ -291,36 +291,51 @@ function deleteItem(itemId){
                 tableauProjets()
             }
             {
-            <div id="id01" className="modal">
-                <span onClick={() => {document.getElementById('id01').style.display='none'}} className="close" title="Close Modal">&times;</span>
-                <form className="modal-content" >
-                  <div className="container">
-                    <h1>Delete </h1>
-                    <p>Are you sure you want to delete?</p>
-              
-                    <div className="clearfix">
-                      <button type="button" onClick={() => {document.getElementById('id01').style.display='none'}} className="cancelbtn">Cancel</button>
-                      <button type="button" className="deletebtn" onClick={() => {
-                            console.log(checkedItems)
-                               
-                                if(checkedItems.length > 0){
-                                    //on supprime les éléments sélectionnés
-                                    deleteItems(projetList, 0)
-                                    document.getElementById('id01').style.display='none'
-                                }
-                                else{
-                                    console.log(selectedItemId);
-                                    //on supprime l'élément sélectionné
-                                    deleteItem(selectedItemId)
-                                    document.getElementById('id01').style.display='none'
-                                }
-                                
-                            }}>Delete</button>
+               
+                <div id="myModal" className="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                
+                    
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <span style={{display:"none"}}>&times;</span>
+                        <h4 style={{ marginLeft:'40%' }} className="modal-title">Delete</h4>
+                      </div>
+                      <div className="modal-body">
+                        <p> {confirmAlertMsg} </p>
+                      </div>
+                      <div className="modal-footer row">
+                        <div className='col'>
+                            <button type="button" data-dismiss="modal" className="deletebtn" onClick={() => {
+                                            console.log(checkedItems)
+                                            
+                                                if(checkedItems.length > 0){
+                                                    //on supprime les éléments sélectionnés
+                                                    deleteItems(projetList, 0)
+                                                
+                                                }
+                                                else{
+                                                    console.log(selectedItemId);
+                                                    //on supprime l'élément sélectionné
+                                                    deleteItem(selectedItemId)
+                    
+                                                }
+                                                
+                                            }}>Delete</button>
+                        </div>
+                        <div className='col'>
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
                     </div>
+                
                   </div>
-                </form>
-            </div>
+                </div>
             }
+
+
+
+
                      
     </div>
 );

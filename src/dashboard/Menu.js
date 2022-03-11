@@ -13,7 +13,13 @@ function Menu({spaceName,setSpaceName}){
             </div>
 
             <div className="row d-flex justify-content-center bouton">
-                <button onClick={(event) => setSpaceName('listStock') } className="col-12 menu-button">Stocks</button>
+                <button onClick={(event) => setSpaceName('listMateriau') } className="col-12 menu-button">Materiaux</button>
+            </div>
+            <div className="row d-flex justify-content-center bouton">
+                <button onClick={(event) => setSpaceName('listMateriel') } className="col-12 menu-button">Materiels</button>
+            </div>
+            <div className="row d-flex justify-content-center bouton">
+                <button onClick={(event) => setSpaceName('Notifications') } className="col-12 menu-button">Notifications</button>
             </div>
             <div className="row d-flex justify-content-center bouton">
                  <button  className="col-12 menu-button">Logout</button>

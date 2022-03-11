@@ -39,24 +39,28 @@ function Signup(){
       if(lastname === ""){
           setDisplayAlert(true)
           setAlertMsg("Veuillez renseigner votre prenom!")
+          alert(alertMsg)
           return false
       }
 
       if(firstname === ""){
           setDisplayAlert(true) 
           setAlertMsg("Veuillez renseigner votre nom!")
+          alert(alertMsg)
           return false
       }
 
       if(email === "" || !validator.validate(email)){
           setDisplayAlert(true)
           setAlertMsg("Veuillez Entrer une adresse mail valide!")
+          alert(alertMsg)
           return false
       }
 
       if(password === ""){
           setDisplayAlert(true)
           setAlertMsg("Veuillez renseigner le champ mot de passe!")
+          alert(alertMsg)
           return false
 
       }else{
@@ -65,6 +69,7 @@ function Signup(){
           if(password_validation.length){
               setDisplayAlert(true)
               setAlertMsg("mot de passe pas reglementaire")
+              alert(alertMsg)
               return false
           }
       }
@@ -77,6 +82,7 @@ function Signup(){
  function CreateUser(event){
   //construction de la requete
  var user = formValidation()
+ 
  if (user) {
   var requestUrl = API_URL +"/users"
   var request = new XMLHttpRequest();
@@ -94,21 +100,27 @@ function Signup(){
       if(requestStatus === 500){
           var server_error = true
           setDisplayAlert(true);
-          setAlertMsg("Il existe déjà un compte pour cette adresse mail.");
+          setAlertMsg("erreur au niveau du serveur.");
+          alert(alertMsg)
  
       }
       else if (requestStatus===403) {
         setDisplayAlert(true);
         setAlertMsg("Il existe déjà un compte pour cette adresse mail.");
+        alert(alertMsg)
         
       }
       else if(requestStatus === 201){
         console.log('gooddd')
+        setDisplayAlert(true);
+        setAlertMsg("compte crée avec success.");
+        alert(alertMsg)
         history.push("");
           //requête réussie
          
       }
   }
+   setAlertMsg('')
    event.preventDefault()
  }
 }
