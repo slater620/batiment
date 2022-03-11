@@ -41,8 +41,8 @@ function getUpdateButtonId(item){
 }
 
 //fonction permettant de construire l'id du bouton de commande d'un élément//
-function getCommandeId(item){
-    return 'Button_' + item['id']
+function getCommandeButtonId(item){
+    return 'commandeButton_' + item['id']
 }
 
 //fonctions de creation
@@ -192,7 +192,7 @@ function deleteItems(itemsList, checkedItemIndex){
 
 //fonction permettant de supprimer un élément ayant son id//
 function deleteItem(itemId){
-    const  quantite = document.querySelector('#quantitematerielsupprimer').value 
+    const  quantite = document.querySelector('#quantitesupprimer').value 
     //création de la requête
     var requestURL = API_URL +"/Stocks/" + itemId + "/"+ quantite + "/"
     var request = new XMLHttpRequest();
@@ -255,8 +255,8 @@ function deleteItem(itemId){
                         <th scope="col" >date d'approvisionnement</th>
                         <th scope="col">date de modification</th>
                         <th className="hover-pointer" scope="col">
-                            <a id="delete" style={{color:"black"}} data-toggle="modal" data-target="#myModal" style={{color:"black"}}  onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les materiaux selectionnés?')}
-                                    style={{marginRight:"10px"}}>
+                            <a id="delete" style={{color:"black",marginRight:"10px"}} data-toggle="modal" data-target="#myModal"   onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les materiaux selectionnés?')}
+                                    >
                                 <span className="material-icons md-48" title="supprimer">delete</span>
                             </a>
                         </th>
@@ -279,13 +279,13 @@ function deleteItem(itemId){
                                                 //on affiche le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(materiel)).style.visibility = "visible"
                                                 document.getElementById(getUpdateButtonId(materiel)).style.visibility = "visible"
-                                                document.getElementById(getCommandeId(materiel)).style.visibility = "visible"
+                                                document.getElementById(getCommandeButtonId(materiel)).style.visibility = "visible"
                                             }}
                                             onMouseOut={() =>{
                                                 //on retire le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(materiel)).style.visibility = "hidden"
                                                 document.getElementById(getUpdateButtonId(materiel)).style.visibility = "hidden"
-                                                document.getElementById(getCommandeId(materiel)).style.visibility = "hidden"
+                                                document.getElementById(getCommandeButtonId(materiel)).style.visibility = "visible"
                                             }}
                                              >
                                             
@@ -299,7 +299,7 @@ function deleteItem(itemId){
                                             <td className="col-2 text">{materiel['dateApprovisionnement']}</td>
                                             <td className="col-3 text">{materiel['updatedAt']}</td>
                                             <td className="col-1 vertical-center">
-                                                <a className="item-delete material-icons md-48 delete-icon"  data-toggle="modal" data-target="#Modal" id={getDeleteButtonId(materiel)}  title="supprimer" onClick={(event) =>{
+                                                <a className="item-delete material-icons md-48 delete-icon"  data-toggle="modal" data-target="#myModal" id={getDeleteButtonId(materiel)}  title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
                                                     setCheckedItems([])
 
@@ -321,7 +321,7 @@ function deleteItem(itemId){
                                                 }}>
                                                     <span className="material-icons md-48 delete-icon">edit</span>
                                                 </a>
-                                                <a   data-toggle="modal" data-target="#commande" id={getCommandeId(materiel)} className="add-icon item-add" href="#" title='commander'
+                                                <a   data-toggle="modal" data-target="#commande" id={getCommandeButtonId(materiel)} className="add-icon item-add" href="#" title='commander'
                                                      onClick={(event) =>{ setItemData(materiel) ; event.preventDefault()}}>
                                                     <span class="material-icons md-48 ">add</span></a> 
                                         </td>
@@ -346,9 +346,9 @@ function deleteItem(itemId){
             {
                 tableauStocks()
             }
-             {
+            {
                
-               <div id="Modal" className="modal fade" role="dialog">
+               <div id="myModal" className="modal fade" role="dialog">
                  <div className="modal-dialog">
                
                    
@@ -359,16 +359,6 @@ function deleteItem(itemId){
                      </div>
                      <div className="modal-body">
                        <p> {confirmAlertMsg} </p>
-                       <form >
-                            <div className="row form-group">
-                                    <div className="col-25">
-                                        <label >quantité</label>
-                                    </div>
-                                    <div className="col-75">
-                                        <input type="number" id="quantitematerielsupprimer" className="form-control" placeholder="quantité a suprimmer"/>
-                                    </div>
-                            </div>
-                       </form>
                      </div>
                      <div className="modal-footer row">
                        <div className='col'>

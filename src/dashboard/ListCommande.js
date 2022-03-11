@@ -201,8 +201,7 @@ function deleteItem(itemId){
                         <th>Date de commande</th>
                         <th>Date d'arrivée</th>
                         <th className="hover-pointer">
-                            <a id="delete" data-toggle="modal" data-target="#myModal"  style={{color:"black"}} onClick={() => {  setConfirmAlertMsg("Voulez-vous supprimer les taches selectionnées  ?")}}
-                                    style={{marginRight:"10px"}}>
+                            <a id="delete" data-toggle="modal" data-target="#myModal"  style={{color:"black",marginRight:"10px"}} onClick={() => {  setConfirmAlertMsg("Voulez-vous supprimer les taches selectionnées  ?")}}>
                                 <span className="material-icons md-48" title="supprimer">delete</span>
                             </a>
                         </th>
