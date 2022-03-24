@@ -26,19 +26,21 @@ function UpdateTache({setSpaceName,spaceTacheName,itemToUpdate,setItemToUpdate,t
         error = true
     }
 
+    
     if(description === ""){
-        error = true
+        alert('entrer la description')
     }
 
     if(nom === ""){
-        error = true
+        alert('entrer le nom')
     }
        
     if(dateDebut === ""){
-        error = true
+        alert('entrer la date de debut')
     }
     if(dateFin === ""){
         error = true
+        alert('entrer la date de fin')
     }
     
     var tache = {nom ,projet, dateDebut , dateFin , description}
@@ -62,60 +64,44 @@ function UpdateTache({setSpaceName,spaceTacheName,itemToUpdate,setItemToUpdate,t
        console.log(request.response)
        //on remplace l'élément dans la liste des taches
        const index = tacheList.findIndex(tache => tache['id'] === itemToUpdate['id'])
-       setSpaceName('listTache')
+       alert('la tache a bien été modifiée')
     }
     event.preventDefault();
 }
     return (
         <div className="container">
-            <h2 style={{textAlign:"center",marginTop:"1%"}}>Modifier la Tache {itemToUpdate['nom']}</h2>
-           <form>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label for="name">Name</label>
-                    </div>
-                    <div className="col-75">
-                        <input type="text" className="form-control" id="nameupdate" name="name" placeholder="name of project"/>
-                    </div>
+           
+           
+            <form className="row g-3">
+                <h2 style={{textAlign:"center",marginTop:"1%"}}>Modifier la Tache {itemToUpdate['nom']}</h2>
+                <div className="col-md-4">
+                    <label for="nameupdate">Nom</label>
+                    <input type="text" defaultValue={itemToUpdate['nom']} className="form-control" id="nameupdate" name="name" placeholder="nom de la tache" required/>                    
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label for="description">description</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="descriptionupdate" className="form-control" name="description" placeholder="description of project"/>
-                    </div>
+                <div className="col-md-4">
+                    <label for="descriptionupdate">description</label>
+                    <input type="text" id="descriptionupdate" defaultValue={itemToUpdate['description']} className="form-control" name="description" placeholder="description de la tache" required/>          
                 </div>
-                <div className="row form-group"> 
-                    <div className="col-25">
-                        <label for="start-date">start date</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="date" className="form-control" id="startdateupdate" name="start-date"/>
-                    </div>
+                <div className="col-md-6">
+                    <label for="startdateupdate"> date de debut</label>
+                    <input type="date" className="form-control" defaultValue={ itemToUpdate['dateDebut'] } id="startdateupdate" name="start-date" required/>
                 </div>
-                <div className="row form-group"> 
-                    <div className="col-25">
-                        <label for="end-date">end date</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="date" className="form-control" id="enddateupdate" name="end-date"/>
-                    </div>
+                <div className="col-md-6">
+                    <label for="enddateupdate">date de fin</label>
+                    <input type="date" className="form-control" id="enddateupdate" defaultValue={ itemToUpdate['dateFin'] } name="end-date" required/>
                 </div>
-                <div className="row form-group"> 
-                    <div className="col-25">
-                        <label for="projet">projet</label>
-                    </div>
-                    <div class="col-75">
-                        <select id="projetupdate" className="form-control select-input">
-                                        {
-                                            projetList.map((projet) => <option value={projet['id']} key={projet['id']}>{projet['nom']}</option>)
-                                        }
-                        </select>
-                    </div>
+                <div className="col-md-6">
+                        <label for="projetupdate">projet</label>
+                        <select  id="projetupdate" className="form-control select-input">
+                                    {
+                                        projetList.map((projet) => <option value={projet['id']} key={projet['id']}>{projet['nom']}</option>)
+                                    }
+                    </select>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={(event) => updateTache(event)} >Save</button>
-            </form>
+                <div className="col-12">
+                    <button type="submit" className="btn btn-primary"  onClick={(event) => updateTache(event)}>Save</button>
+                </div>
+            </form> 
       </div>
     )
 }

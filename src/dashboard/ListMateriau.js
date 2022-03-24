@@ -46,60 +46,6 @@ function getCommandeButtonId(item){
 }
 
 
-//fonctions de creation
-const createCommande = (event) => {
-    //récupération des valeurs du formulaire
-    var user = localStorage.getItem("user")
-    const quantite = document.querySelector('#quantitecommande').value
-    const prix = document.querySelector('#prixcommande').value
-    const dateCommande = document.querySelector('#datecommande').value     
-    const dateArrivee = document.querySelector('#datearrivee').value 
-    const stock =  itemData['id']
-      
-    if(!connected){
-        error = true            
-    }
-    if(quantite === ""){
-        error = true
-    }
-    
-    if(dateCommande === ""){
-        error = true
-    }
-    if(dateArrivee === ""){
-        error = true
-    }
-    var commande = {  prix , quantite ,dateArrivee, dateCommande,user,stock}
-    commande = JSON.stringify(commande)
-    //création de la requête
-    var requestURL = API_URL + "/Commandes/";
-    var request = new XMLHttpRequest();
-    request.open('POST', requestURL);
-    request.setRequestHeader('Content-Type' , 'application/json');
-    request.setRequestHeader('Authorization' , 'Bearer ' + token);
-    request.responseType = 'json';
-    request.send(commande);
-    console.log(request.status)
-    console.log(commande);
-    request.onload = function(){
-        
-        const requestStatus = request.status
-        
-        if(requestStatus === 403){
-            server_error = true
-                
-
-        }else if(requestStatus === 201){
-            //requête réussie
-            console.log('gooddd')
-            console.log('commande')
-            
-        }
-    }
-    event.preventDefault()
-}
-
-
 //fonction permettant de sélectionner tous les éléments de la liste
 function selectAll(){
     const checked = document.getElementById('selectAll').checked
@@ -171,12 +117,8 @@ function deleteItems(itemsList, checkedItemIndex){
                 
 
                 if(deletedItemIndex > -1){
-        
                     
-                    setMateriauList(itemsList)
-                   
-                    
-
+                    setMateriauList(itemsList)                    
                     deleteItems(itemsList, checkedItemIndex + 1)
                 }
             }
@@ -206,13 +148,37 @@ function deleteItem(itemId){
         const requestStatus = request.status
         console.log(request.response)
         console.log("supprimer un")
-
+        createMotif()
 
              //on vide la liste des éléments sélectionnés
             setCheckedItems([])
         }
 }
+    //fonction permettant de creer un motif  ayant son id//
+    function createMotif(itemId){
+        const  motif = document.querySelector('#motifmateriel').value 
+        //création de la requête
+        const motif_suppression = {motif , itemId}
+        motif_suppression = JSON.stringify(motif_suppression)
+        var requestURL = API_URL +"/Motifs/"
+        var request = new XMLHttpRequest();
+        request.open('POST', requestURL);
+        request.setRequestHeader('Authorization' , 'Bearer ' + token);
+        request.setRequestHeader('Content-Type' , 'application/json');
+        request.responseType = 'json';
+        request.send(motif_suppression);
+        request.onload = function(){
+            const requestStatus = request.status
+            
+            if(requestStatus === 403){
+                server_error = true
+            
 
+            }else if(requestStatus === 201){
+                console.log('good')
+            }
+        }
+    }
 
     //fonction permettant de récupérer la liste des stocks
     function getStocks(){
@@ -260,7 +226,7 @@ function deleteItem(itemId){
                         <th scope="col" >date d'approvisionnement</th>
                         <th scope="col">date de modification</th>
                         <th className="hover-pointer" scope="col">
-                            <a id="delete" style={{color:"black"}} data-toggle="modal" data-target="#myModal" style={{color:"black"}}  onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les materiaux selectionnés?')}
+                            <a id="delete" data-toggle="modal" data-target="#myModal"  onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les materiaux selectionnés?')}
                                     style={{marginRight:"10px"}}>
                                 <span className="material-icons md-48" title="supprimer">delete</span>
                             </a>
@@ -284,13 +250,11 @@ function deleteItem(itemId){
                                                 //on affiche le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(materiau)).style.visibility = "visible"
                                                 document.getElementById(getUpdateButtonId(materiau)).style.visibility = "visible"
-                                                document.getElementById(getCommandeButtonId(materiau)).style.visibility = "visible"
                                             }}
                                             onMouseOut={() =>{
                                                 //on retire le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(materiau)).style.visibility = "hidden"
                                                 document.getElementById(getUpdateButtonId(materiau)).style.visibility = "hidden"
-                                                document.getElementById(getCommandeButtonId(materiau)).style.visibility = "hidden"
                                             }}
                                             onClick={(event)=>{
                                                 const parentTagName = event.target.parentElement.tagName
@@ -334,10 +298,6 @@ function deleteItem(itemId){
                                                 }}>
                                                     <span className="material-icons md-48 delete-icon">edit</span>
                                                 </a>
-                                                
-                                                <a   data-toggle="modal" id={getCommandeButtonId(materiau)} data-target="#commande" className="add-icon item-add" href="#" title='commander'
-                                                     onClick={(event) =>{ setItemData(materiau) ; event.preventDefault()}}>
-                                                    <span className="material-icons md-48 ">add</span></a> 
                                         </td>
                                             
                 
@@ -382,6 +342,14 @@ function deleteItem(itemId){
                                         <input type="number" id="quantitesupprimer" className="form-control" placeholder="quantité a suprimmer"/>
                                     </div>
                             </div>
+                            <div className="row form-group">
+                                    <div className="col-25">
+                                        <label >motif</label>
+                                    </div>
+                                    <div className="col-75">
+                                        <input type="text" id="motifmateriau" className="form-control" placeholder="pourquoi souhaiter vous supprimer ce materiau?"/>
+                                    </div>
+                            </div>
                        </form>
                      </div>
                      <div className="modal-footer row">
@@ -411,69 +379,8 @@ function deleteItem(itemId){
                
                  </div>
                </div>
-           }
-           {
-               
-               <div id="commande" className="modal fade" role="dialog">
-                 <div className="modal-dialog">
-                   
-                   <div className="modal-content">
-                     <div className="modal-header">
-                       <span style={{display:"none"}}>&times;</span>
-                       <h4 style={{ marginLeft:'40%' }} className="modal-title">Commander </h4>
-                     </div>
-                       
-                            <form >
-                                <div className="modal-body">
-                                    <div className="row form-group">
-                                        <div className="col-25">
-                                            <label >quantité</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="number" id="quantitecommande" className="form-control" placeholder="quantité a commander"/>
-                                        </div>
-                                    </div>
-                                    <div className="row form-group">
-                                        <div className="col-25">
-                                            <label >prix</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="number" className="form-control" id="prixcommande"  placeholder="prix de la commande"/>
-                                        </div>
-                                    </div>
-                                    <div className="row form-group"> 
-                                        <div className="col-25">
-                                            <label>date de commande</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="date" className="form-control" id="datecommande" />
-                                        </div>
-                                    </div>
-                                    <div className="row form-group"> 
-                                        <div className="col-25">
-                                            <label>date d'arrivée</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="date" className="form-control" id="datearrivee" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="modal-footer row">
-                                    <div className='col'>
-                                        <button type="submit" data-dismiss="modal" className="deletebtn" onClick={(event) => {createCommande(event)}}>commander</button>
-                                    </div>
-                                    <div className='col'>
-                                        <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </form>
-                     
-                   </div>
-               
-                 </div>
-               </div>
             }
+           
                      
     </div>
 );

@@ -13,7 +13,7 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,proje
 
    //variable indiquant si l'utilisa teur est connecté à internet
    var  connected = window.navigator.onLine
-    console.log('bonjour')
+   
     //récupération des valeurs du formulaire
    const nom= document.querySelector('#nomupdate').value
    const description = document.querySelector('#descriptionupdate').value
@@ -39,9 +39,10 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,proje
        //requête réussie
        console.log('gooddd')
        console.log(request.response)
+
        //on remplace l'élément dans la liste des projets
        const index = projetList.findIndex(projet => projet['id'] === itemToUpdate['id'])
-       setSpaceName('listProjet')
+       alert('le projet '+ itemToUpdate['nom'] + ' a bien été modifié')
     }
     event.preventDefault();
 }
@@ -54,7 +55,7 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,proje
                         <label for="name">Name</label>
                     </div>
                     <div className="col-75">
-                        <input  type="text" className="form-control" id="nomupdate" name="name" placeholder="name of project"/>
+                        <input  type="text" defaultValue={ itemToUpdate['nom'] } className="form-control" id="nomupdate" name="name" placeholder="name of project"/>
                     </div>
                 </div>
                 <div className="row form-group">
@@ -62,7 +63,7 @@ function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,proje
                         <label for="description">description</label>
                     </div>
                     <div class="col-75">
-                        <input  type="text" id="descriptionupdate" className="form-control" name="description" placeholder="description of project"/>
+                        <input  type="text" defaultValue={ itemToUpdate['description'] } id="descriptionupdate" className="form-control" name="description" placeholder="description of project"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={(event) => updateProjet(event)} >Save</button>

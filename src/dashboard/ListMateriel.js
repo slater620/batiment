@@ -45,58 +45,6 @@ function getCommandeButtonId(item){
     return 'commandeButton_' + item['id']
 }
 
-//fonctions de creation
-const createCommande = (event) => {
-    //récupération des valeurs du formulaire
-    var user = localStorage("user")
-    const quantite = document.querySelector('#quantity').value
-    const prix = document.querySelector('#price').value
-    const dateCommande = document.querySelector('#datecommande').value     
-    const dateArrivee = document.querySelector('#datearrivee').value 
-    const stock =  itemData['id']
-      
-    if(!connected){
-        error = true            
-    }
-    if(quantite === ""){
-        error = true
-    }
-    
-    if(dateCommande === ""){
-        error = true
-    }
-    if(dateArrivee === ""){
-        error = true
-    }
-    var commande = {  prix , quantite ,dateArrivee, dateCommande,user,stock}
-    commande = JSON.stringify(commande)
-    //création de la requête
-    var requestURL = API_URL + "/Commandes/";
-    var request = new XMLHttpRequest();
-    request.open('POST', requestURL);
-    request.setRequestHeader('Content-Type' , 'application/json');
-    request.setRequestHeader('Authorization' , 'Bearer ' + token);
-    request.responseType = 'json';
-    request.send(commande);
-    console.log(request.status)
-    console.log(commande);
-    request.onload = function(){
-        
-        const requestStatus = request.status
-        
-        if(requestStatus === 403){
-            server_error = true
-                
-
-        }else if(requestStatus === 200){
-            //requête réussie
-            console.log('gooddd')
-            alert('succcess')
-        }
-        console.log(request.response)
-    }
-    event.preventDefault()
-}
 
 
 //fonction permettant de sélectionner tous les éléments de la liste
@@ -205,15 +153,41 @@ function deleteItem(itemId){
         const requestStatus = request.status
         console.log(request.response)
         console.log("supprimer un")
-
-
+        createMotif(itemId)
              //on vide la liste des éléments sélectionnés
             setCheckedItems([])
         }
+    getMateriel()
+}
+
+//fonction permettant de creer un motif  ayant son id//
+function createMotif(itemId){
+    const  motif = document.querySelector('#motifmateriel').value 
+    //création de la requête
+    const motif_suppression = {motif , itemId}
+    motif_suppression = JSON.stringify(motif_suppression)
+    var requestURL = API_URL +"/Motifs/"
+    var request = new XMLHttpRequest();
+    request.open('POST', requestURL);
+    request.setRequestHeader('Authorization' , 'Bearer ' + token);
+    request.setRequestHeader('Content-Type' , 'application/json');
+    request.responseType = 'json';
+    request.send(motif_suppression);
+    request.onload = function(){
+        const requestStatus = request.status
+        
+        if(requestStatus === 403){
+            server_error = true
+          
+
+        }else if(requestStatus === 201){
+            console.log('good')
+        }
+    }
 }
 
     //fonction permettant de récupérer la liste des stocks
-    function getStocks(){
+    function getMateriel(){
  
          //construction de la requete
         var requestUrl = API_URL +"/Stocks"
@@ -255,7 +229,7 @@ function deleteItem(itemId){
                         <th scope="col" >date d'approvisionnement</th>
                         <th scope="col">date de modification</th>
                         <th className="hover-pointer" scope="col">
-                            <a id="delete" style={{color:"black",marginRight:"10px"}} data-toggle="modal" data-target="#myModal"   onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les materiaux selectionnés?')}
+                            <a id="delete" style={{marginRight:"10px"}} data-toggle="modal" data-target="#myModal"   onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les materiaux selectionnés?')}
                                     >
                                 <span className="material-icons md-48" title="supprimer">delete</span>
                             </a>
@@ -263,7 +237,7 @@ function deleteItem(itemId){
                         <th scope="col">
                         <span className="hover-pointer fa fa-refresh" title="rafraîchir" style={{fontSize:"x-large"}} onClick={() =>{
                                 //on rafraîchi la liste
-                                getStocks()
+                                getMateriel()
                                 
                             }}></span>
                         </th>
@@ -279,13 +253,13 @@ function deleteItem(itemId){
                                                 //on affiche le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(materiel)).style.visibility = "visible"
                                                 document.getElementById(getUpdateButtonId(materiel)).style.visibility = "visible"
-                                                document.getElementById(getCommandeButtonId(materiel)).style.visibility = "visible"
+                                            
                                             }}
                                             onMouseOut={() =>{
                                                 //on retire le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(materiel)).style.visibility = "hidden"
                                                 document.getElementById(getUpdateButtonId(materiel)).style.visibility = "hidden"
-                                                document.getElementById(getCommandeButtonId(materiel)).style.visibility = "visible"
+                                               
                                             }}
                                              >
                                             
@@ -320,10 +294,7 @@ function deleteItem(itemId){
                                                     event.preventDefault()
                                                 }}>
                                                     <span className="material-icons md-48 delete-icon">edit</span>
-                                                </a>
-                                                <a   data-toggle="modal" data-target="#commande" id={getCommandeButtonId(materiel)} className="add-icon item-add" href="#" title='commander'
-                                                     onClick={(event) =>{ setItemData(materiel) ; event.preventDefault()}}>
-                                                    <span class="material-icons md-48 ">add</span></a> 
+                                                </a> 
                                         </td>
                                             
                 
@@ -359,6 +330,24 @@ function deleteItem(itemId){
                      </div>
                      <div className="modal-body">
                        <p> {confirmAlertMsg} </p>
+                       <form >
+                            <div className="row form-group">
+                                    <div className="col-25">
+                                        <label >quantité</label>
+                                    </div>
+                                    <div className="col-75">
+                                        <input type="number" id="quantitesupprimer" className="form-control" placeholder="quantité a suprimmer"/>
+                                    </div>
+                            </div>
+                            <div className="row form-group">
+                                    <div className="col-25">
+                                        <label >motif</label>
+                                    </div>
+                                    <div className="col-75">
+                                        <input type="text" id="motifmateriel" className="form-control" placeholder="pourquoi souhaiter vous supprimer ce materiel?"/>
+                                    </div>
+                            </div>
+                       </form>
                      </div>
                      <div className="modal-footer row">
                        <div className='col'>
@@ -388,68 +377,7 @@ function deleteItem(itemId){
                  </div>
                </div>
            }
-           {
-               
-               <div id="commande" className="modal fade" role="dialog">
-                 <div className="modal-dialog">
-                   
-                   <div className="modal-content">
-                     <div className="modal-header">
-                       <span style={{display:"none"}}>&times;</span>
-                       <h4 style={{ marginLeft:'40%' }} className="modal-title">Commander </h4>
-                     </div>
-                       
-                            <form >
-                                <div className="modal-body">
-                                    <div className="row form-group">
-                                        <div className="col-25">
-                                            <label >quantité</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="number" id="quantity" className="form-control" name="quantity" placeholder="quantité a commander"/>
-                                        </div>
-                                    </div>
-                                    <div className="row form-group">
-                                        <div className="col-25">
-                                            <label >prix</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="number" className="form-control" id="price" name="price" placeholder="prix de la commande"/>
-                                        </div>
-                                    </div>
-                                    <div className="row form-group"> 
-                                        <div className="col-25">
-                                            <label>date de commande</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="date" className="form-control" id="datecommande" name="date"/>
-                                        </div>
-                                    </div>
-                                    <div className="row form-group"> 
-                                        <div className="col-25">
-                                            <label>date d'arrivée</label>
-                                        </div>
-                                        <div className="col-75">
-                                            <input type="date" className="form-control" id="datearrivee" name="date"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="modal-footer row">
-                                    <div className='col'>
-                                        <button type="submit" data-dismiss="modal" className="deletebtn" onClick={(event) => {createCommande(event)}}></button>
-                                    </div>
-                                    <div className='col'>
-                                        <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </form>
-                     
-                   </div>
-               
-                 </div>
-               </div>
-            }
+           
                      
     </div>
 );

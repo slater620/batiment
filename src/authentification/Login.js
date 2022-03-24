@@ -7,13 +7,6 @@ import {API_URL} from "./Signup"
 var validator = require("email-validator");
 var passwordValidator = require('password-validator');
 function Login(){
-
-  //etat pour contrôler l'affichage du message d'alerte pour le bon remplissage du formulaire
-  const [displayAlert, setDisplayAlert] = useState(false)
-
-  //etat contenant le message d'alerte à afficher pour le remplissage des formulaires
-  const [alertMsg, setAlertMsg] = useState('')
-
   //variable utiles pour le routage
   let history = useHistory();   
   
@@ -35,29 +28,18 @@ function Login(){
     .has().digits(1, "Le mot de passe doit contenir au moins un chiffre")                                // Must have at least 2 digits
 
 
-    if(email === "" || !validator.validate(email)){
-        setDisplayAlert(true)
-        setAlertMsg("Veuillez Entrer une adresse mail valide!")
-        alert(alertMsg)
-        return false
-    }
+    if(!validator.validate(email)){
+      alert('adresse mail invalide')
+      return false
+  }
+  else{
+      var password_validation = schema.validate(password, { details: true })
 
-    if(password === ""){
-        setDisplayAlert(true)
-        setAlertMsg("Veuillez renseigner le champ mot de passe!")
-        alert(alertMsg)
-        return false
-
-    }else{
-        var password_validation = schema.validate(password, { details: true })
-
-        if(password_validation.length){
-            setDisplayAlert(true)
-            setAlertMsg("mot de passe pas reglementaire")
-            alert(alertMsg)
-            return false
-        }
-    }
+      if(password_validation.length){
+         alert('mot de passe non reglementaire')
+          return false
+      }
+  }
     form ={email,password}
 
     return form
@@ -113,18 +95,17 @@ function Login(){
     return (
         <div className="App">
           <div className="auth-wrapper">
-            <div className="auth-inner">
-
-              <form >
+            <form className="auth-inner">
+              <div >
                 <h3>Sign In</h3>
-                <div  className="form-group">
-                  
+                <div className="form-group">
                   <label>Email address</label>
                   <input
                     type="email"
                     className="form-control"
                     id="emaillogin"
                     placeholder="Enter email"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -134,7 +115,8 @@ function Login(){
                     className="form-control"
                     autoComplete="on"
                     id="passwordlogin"
-                    placeholder="Enter password"/>
+                    placeholder="Enter password"
+                    required/>
                 </div>
                 <div className="form-group">
                   <div className="custom-control custom-checkbox">
@@ -158,8 +140,8 @@ function Login(){
                 <p className="forgot-password text-right">
                   Don't have account <Link to ="/signup"><a href="#">sign Up?</a></Link> 
                 </p>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
           
         </div>

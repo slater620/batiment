@@ -14,25 +14,10 @@ import CreateMateriel from './CreateMateriel'
 import UpdateMateriel from './UpdateMateriel';
 import UpdateCommande from './UpdateCommande';
 import TacheProjet from './TacheProjet'; 
+import CreateCommande from './CreateCommande'
+function Workspace({spaceName,setSpaceName , itemData,setItemData,itemToUpdate,setItemToUpdate,projetList,setProjetList,tacheList,setTacheList,materiauList,setMateriauList,materielList,setMaterielList,commandeList,setCommandeList}){
 
-function Workspace({spaceName,setSpaceName}){
-
-    //etat contenant la liste  des projets
-    const [projetList, setProjetList] = useState([])
-
-    //etat contenant la liste  des taches
-    const [tacheList, setTacheList] = useState([])
-
-    
-    //etat contenant la liste  des stocks
-    const [materielList,setMaterielList]= useState([])
-    const [materiauList, setMateriauList] = useState([])
-
-    //etat contenant un item precis
-    const [itemData, setItemData] = useState('')
-
-    //etat contenant un item pour la modification
-    const [itemToUpdate,setItemToUpdate]= useState()
+   
 
     switch (spaceName) {
 
@@ -48,7 +33,6 @@ function Workspace({spaceName,setSpaceName}){
         case 'detail':
             return <TacheProjet setTacheList={ setTacheList } tacheList={tacheList} itemData={ itemData } setItemData={setItemData} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
-
  
         case 'listTache':
             return <ListTache itemData={ itemData } setItemData={setItemData} setTacheList={ setTacheList } tacheList={tacheList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
@@ -85,15 +69,18 @@ function Workspace({spaceName,setSpaceName}){
             return <UpdateMateriel setMaterielList={ setMaterielList } materielList={ materielList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
 
+        case 'createCommande':
+            return <CreateCommande setMaterielList={ setMaterielList } materielList={ materielList} setMateriauList={ setMateriauList } materiauList={ materiauList} />
+            break;
 
         case 'listCommande':
-            return <ListCommande itemData={ itemData } setItemData={setItemData}  setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
+            return <ListCommande commandeList={commandeList} setCommandeList={ setCommandeList } itemData={ itemData } setItemData={setItemData}  setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
 
         case 'updateCommande':
-            return <UpdateCommande spaceName= {spaceName} setSpaceName={setSpaceName} />
+            return <UpdateCommande  setMateriauList={ setMateriauList } materiauList={ materiauList} setMaterielList={ setMaterielList } materielList= { materielList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
-        
+
         default:
     }
 }

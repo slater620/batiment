@@ -15,8 +15,15 @@ function CreateProjet({setSpaceName,spaceName}){
    var  connected = window.navigator.onLine
    
    //récupération des valeurs du formulaire
-   const nom= document.querySelector('#nom').value
-   const description = document.querySelector('#description').value
+   const nom= document.querySelector('#nomprojet').value
+   const description = document.querySelector('#descriptionprojet').value
+
+   if (nom==='') {
+       alert('entrer le nom du projet')
+    }
+    if (description==='') {
+        alert('entrer la description du projet')
+     }
    var token = localStorage.getItem("token")
    const user = localStorage.getItem("user")
    console.log(user)
@@ -39,13 +46,16 @@ function CreateProjet({setSpaceName,spaceName}){
        
        if(requestStatus === 500){
            var server_error = true
+           alert('réessayer')
          
 
-       }else if(requestStatus === 201){
+       }
+       else if(requestStatus === 201){
            //requête réussie
            console.log('gooddd')
            console.log(request.response)
-           setSpaceName('listProjet')
+           
+           alert('projet crée avec success')
        }
     }
     event.preventDefault();
@@ -56,18 +66,18 @@ function CreateProjet({setSpaceName,spaceName}){
            <form>
                 <div className="row form-group">
                     <div className="col-25">
-                        <label for="name">Name</label>
+                        <label for="nomprojet">Nom</label>
                     </div>
                     <div className="col-75">
-                        <input type="text" className="form-control" id="nom" name="name" placeholder="name of project"/>
+                        <input type="text" className="form-control" id="nomprojet" name="name" placeholder="nom du projet"/>
                     </div>
                 </div>
                 <div className="row form-group">
                     <div className="col-25">
-                        <label for="description">description</label>
+                        <label for="descriptionprojet">description</label>
                     </div>
-                    <div class="col-75">
-                        <input type="text" id="description" className="form-control" name="description" placeholder="description of project"/>
+                    <div className="col-75">
+                        <input type="text" id="descriptionprojet" className="form-control" name="description" placeholder="description du projet"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={(event) => createProjet(event)} >Save</button>

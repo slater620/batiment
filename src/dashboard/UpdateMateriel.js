@@ -13,10 +13,11 @@ function UpdateMateriel({setSpaceName, spaceName,itemToUpdate,setItemToUpdate,ma
     //fonctions de creation d'un stock
     const updateMateriel = (event) => {
         //récupération des valeurs du formulaire
-        const nom = document.querySelector('#name').value
-        const quantite = document.querySelector('#quantity').value
-        const prix = document.querySelector('#price').value
-        const dateApprovisionnement = document.querySelector('#date').value
+        const nom = document.querySelector('#nommaterielupdate').value
+        const denomination =  document.querySelector('#unitematerielupdate').value
+        const quantite = document.querySelector('#quantitematerielupdate').value
+        const prixUnitaire = document.querySelector('#prixmaterielupdate').value
+        const dateApprovisionnement = document.querySelector('#datematerielupdate').value
         const type =  'materiel'     
 
         if(!connected){
@@ -26,21 +27,34 @@ function UpdateMateriel({setSpaceName, spaceName,itemToUpdate,setItemToUpdate,ma
 
         if(quantite === ""){
             error = true
+            alert('entrer la quantite du materiel')
         }
 
         if(nom === ""){
             error = true
+            alert('entrer le nom du materiel')
         }
         
         if(dateApprovisionnement === ""){
             error = true
+            alert('entrer la date approvisionnement')
         }
-        var user = localStorage("user")
-        var stock = {nom , prix , quantite , dateApprovisionnement,user,type}
+        
+        if(prixUnitaire === ""){
+            error = true
+            alert('entrer le prix unitaire')
+        }
+
+        if(denomination === ""){
+            error = true
+            alert('entrer unite du materiel')
+        }
+        var user = localStorage.getItem('user')
+        var stock ={nom ,denomination,quantite,prixUnitaire ,type, dateApprovisionnement,user}
         //construction de la requete
         var requestUrl = API_URL +"/Stocks/" + itemToUpdate['id'] + "/";
         var request = new XMLHttpRequest();
-        var token = localStorage("token")
+        var token = localStorage.getItem("token")
         request.open('PATCH', requestUrl);
         request.setRequestHeader('Content-Type' , 'application/json');
         request.setRequestHeader('Authorization' , 'Bearer ' + token);
@@ -61,7 +75,7 @@ function UpdateMateriel({setSpaceName, spaceName,itemToUpdate,setItemToUpdate,ma
                 //requête réussie
                 console.log('gooddd')
                 const index = materielList.findIndex(stock => stock['id'] === itemToUpdate['id'])
-                setSpaceName('listMateriel')
+                alert('le materiau a bien été modifié')
             }
             
         }
@@ -71,41 +85,31 @@ function UpdateMateriel({setSpaceName, spaceName,itemToUpdate,setItemToUpdate,ma
 
        return (
         <div className="container">
-            <form >
-                <h2 style={{textAlign:"center",marginTop:"1%"}}>MODIFIER LE STOCK {itemToUpdate['nom']} </h2>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label >Name</label>
-                    </div>
-                    <div className="col-75">
-                        <input type="text" className="form-control" id="name" name="name" placeholder="name of stock"/>
-                    </div>
+            <form className="row g-3" >
+                <h2 style={{textAlign:"center",marginTop:"1%"}}>MODIFIER LE MATERIEL {itemToUpdate['nom']} </h2>
+                <div className="col-md-4">
+                        <label >Nom</label>
+                        <input defaultValue={itemToUpdate['nom']} type="text" className="form-control" id="nommaterielupdate" name="name" placeholder="nom du materiel"/>
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label >quantity</label>
-                    </div>
-                    <div className="col-75">
-                        <input type="number" id="quantity" className="form-control" name="quantity" placeholder="quantity of stock"/>
-                    </div>
+                <div className="col-md-4">
+                    <label >quantité</label>
+                    <input type="number" defaultValue={itemToUpdate['quantite']}  id="quantitematerielupdate" className="form-control" name="quantity" placeholder="quantité de materiel"/>
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label >price</label>
-                    </div>
-                    <div className="col-75">
-                        <input  type="number" className="form-control" id="price" name="price" placeholder="price of stock"/>
-                    </div>
+                <div className="col-md-4">
+                    <label >Unite</label>
+                    <input type="text" id="unitematerielupdate" className="form-control"  placeholder="prix unitaire"/>
                 </div>
-                <div className="row form-group"> 
-                    <div className="col-25">
-                        <label>supply date</label>
-                    </div>
-                    <div className="col-75">
-                        <input  type="date" className="form-control" id="date" name="date"/>
-                    </div>
+                <div className="col-md-4">
+                    <label >prix</label>
+                    <input  type="number" defaultValue={itemToUpdate['prix']} className="form-control" id="prixmaterielupdate" name="price" placeholder="price du matériel"/>
                 </div>
-                <button type="submit" className="btn btn-primary"  onClick={(event) => updateMateriel(event)}>Save</button>
+                <div className="col-md-4"> 
+                    <label> date d'approvisionnement</label>
+                    <input  type="date" defaultValue={itemToUpdate['dateApprovisionnement']} className="form-control" id="datematerielupdate" name="date"/>
+                </div>
+                <div className="col-12">
+                    <button type="submit" className="btn btn-primary"  onClick={(event) => updateMateriel(event)}>Save</button>
+                </div>    
             </form>
       </div>
        )

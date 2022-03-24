@@ -7,14 +7,8 @@ import "./signup.css"
 var validator = require("email-validator");
 var passwordValidator = require('password-validator');
 export const API_URL="https://btp-api-gi.herokuapp.com"
+
 function Signup(){
-
-    //etat pour contrôler l'affichage du message d'alerte pour le bon remplissage du formulaire
-    const [displayAlert, setDisplayAlert] = useState(false)
-
-    //etat contenant le message d'alerte à afficher pour le remplissage des formulaires
-    const [alertMsg, setAlertMsg] = useState('')
-
     //variable utiles pour le routage
     let history = useHistory();   
     
@@ -36,40 +30,24 @@ function Signup(){
       .has().lowercase(1,"Le mot de passe doit contenir une minuscule")                              // Must have lowercase letters
       .has().digits(1, "Le mot de passe doit contenir au moins un chiffre")                                // Must have at least 2 digits
 
-      if(lastname === ""){
-          setDisplayAlert(true)
-          setAlertMsg("Veuillez renseigner votre prenom!")
-          alert(alertMsg)
-          return false
+      if (lastname==="") {
+        alert('entrer votre prenom')
+        return false
+      }
+      if (firstname==="") {
+        alert('entrer votre nom')
+        return false
       }
 
-      if(firstname === ""){
-          setDisplayAlert(true) 
-          setAlertMsg("Veuillez renseigner votre nom!")
-          alert(alertMsg)
+      if(!validator.validate(email)){
+          //alert('adresse mail invalide')
           return false
       }
-
-      if(email === "" || !validator.validate(email)){
-          setDisplayAlert(true)
-          setAlertMsg("Veuillez Entrer une adresse mail valide!")
-          alert(alertMsg)
-          return false
-      }
-
-      if(password === ""){
-          setDisplayAlert(true)
-          setAlertMsg("Veuillez renseigner le champ mot de passe!")
-          alert(alertMsg)
-          return false
-
-      }else{
+      else{
           var password_validation = schema.validate(password, { details: true })
 
           if(password_validation.length){
-              setDisplayAlert(true)
-              setAlertMsg("mot de passe pas reglementaire")
-              alert(alertMsg)
+             alert('mot de passe non reglementaire')
               return false
           }
       }
@@ -82,7 +60,7 @@ function Signup(){
  function CreateUser(event){
   //construction de la requete
  var user = formValidation()
- 
+
  if (user) {
   var requestUrl = API_URL +"/users"
   var request = new XMLHttpRequest();
@@ -91,54 +69,48 @@ function Signup(){
   request.responseType = 'json';
   user = JSON.stringify(user);
   request.send(user);
-  console.log(user)
-  console.log('avance')
   request.onload = function(){
       
       const requestStatus = request.status
       
       if(requestStatus === 500){
-          var server_error = true
-          setDisplayAlert(true);
-          setAlertMsg("erreur au niveau du serveur.");
-          alert(alertMsg)
+          alert("erreur au niveau du serveur.")
  
       }
       else if (requestStatus===403) {
-        setDisplayAlert(true);
-        setAlertMsg("Il existe déjà un compte pour cette adresse mail.");
-        alert(alertMsg)
+        
+        alert("Il existe déjà un compte pour cette adresse mail.")
         
       }
       else if(requestStatus === 201){
         console.log('gooddd')
-        setDisplayAlert(true);
-        setAlertMsg("compte crée avec success.");
-        alert(alertMsg)
+        alert("connection réussie")
         history.push("");
           //requête réussie
          
       }
   }
-   setAlertMsg('')
    event.preventDefault()
  }
 }
 
     return(
     <div className="App">
-        <div className="auth-wrapper">
-          <div className="auth-inner">
+        <div className="auth-wrapper ">
+          <form className="auth-inner">
             <div>
               <h3>Sign Up</h3>
               <div className="form-group">
-                <label>First name</label>
+                <label >First name</label>
                 <input
                   type="text"
                   className="form-control"
                   placeholder="First name"
-                  id="firstname"
+                  id="firstname" required
                 />
+                <div className="valid-feedback">
+                    Looks good!
+                </div>
               </div>
               <div className="form-group">
                 <label>Last name</label>
@@ -146,7 +118,7 @@ function Signup(){
                   type="text"
                   className="form-control"
                   placeholder="Last name"
-                  id="lastname"
+                  id="lastname" required
                 />
               </div>
               <div className="form-group">
@@ -155,7 +127,7 @@ function Signup(){
                   type="email"
                   className="form-control"
                   placeholder="Enter email"
-                  id="email"/>
+                  id="email" required/>
               </div>
               <div className="form-group">
                 <label>Password</label>
@@ -163,7 +135,7 @@ function Signup(){
                   type="password"
                   className="form-control"
                   placeholder="Enter password"
-                  id="password"/>
+                  id="password" required/>
               </div>
               <button type="submit" className="btn btn-primary btn-block"
               onClick={(event) => CreateUser(event)}>Sign Up</button>
@@ -171,7 +143,7 @@ function Signup(){
                 Already registered <Link to="/"><a href="">sign in?</a></Link> 
               </p>
             </div>
-          </div>
+          </form>
         </div>
     </div>
         

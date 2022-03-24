@@ -30,18 +30,19 @@ function CreateTache({setSpaceName, spaceName,projetList,setProjetList}){
     }
 
     if(description === ""){
-        error = true
+        alert('entrer la description')
     }
 
     if(nom === ""){
-        error = true
+        alert('entrer le nom')
     }
        
     if(dateDebut === ""){
-        error = true
+        alert('entrer la date de debut')
     }
     if(dateFin === ""){
         error = true
+        alert('entrer la date de fin')
     }
     
     var tache = {nom ,projet, dateDebut , dateFin , description}
@@ -66,7 +67,7 @@ function CreateTache({setSpaceName, spaceName,projetList,setProjetList}){
           
 
         }else if(requestStatus === 201){
-            setSpaceName('listTache')
+            alert("la tache a été crée avec success ")
         }
     }
     event.preventDefault()
@@ -77,55 +78,36 @@ function CreateTache({setSpaceName, spaceName,projetList,setProjetList}){
 
        return (
         <div className="container">
-            <form >
-            <h2 style={{textAlign:"center",marginTop:"1%"}}>CREER UNE TACHE</h2>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label for="name">Name</label>
-                    </div>
-                    <div className="col-75">
-                        <input type="text" className="form-control" id="name" name="name" placeholder="name of task"/>
-                    </div>
+            <form className="row g-3">
+                <h2 style={{textAlign:"center",marginTop:"1%"}}>CREER UNE TACHE</h2>
+                <div className="col-md-4">
+                    <label for="name">Nom</label>
+                    <input type="text" className="form-control" id="name" name="name" placeholder="nom de la tache" required/>                    
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label for="description">description</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="description" className="form-control" name="description" placeholder="description of task"/>
-                    </div>
+                <div className="col-md-4">
+                    <label for="description">description</label>
+                    <input type="text" id="description" className="form-control" name="description" placeholder="description de la tache" required/>          
                 </div>
-                <div className="row form-group"> 
-                    <div className="col-25">
-                        <label for="start-date">start date</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="date" className="form-control" id="start-date" name="start-date"/>
-                    </div>
+                <div className="col-md-6">
+                    <label for="start-date">start date</label>
+                    <input type="date" className="form-control" id="start-date" name="start-date" required/>
                 </div>
-                <div className="row form-group"> 
-                    <div className="col-25">
-                        <label for="end-date">end date</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="date" className="form-control" id="end-date" name="end-date"/>
-                    </div>
+                <div className="col-md-6">
+                    <label for="end-date">end date</label>
+                    <input type="date" className="form-control" id="end-date" name="end-date" required/>
                 </div>
-                
-                <div className="row form-group"> 
-                    <div className="col-25">
+                <div className="col-md-6">
                         <label for="projet">projet</label>
-                    </div>
-                    <div class="col-75">
                         <select id="projet" className="form-control select-input">
-                                        {
-                                            projetList.map((projet) => <option value={projet['id']} key={projet['id']}>{projet['nom']}</option>)
-                                        }
-                        </select>
-                    </div>
+                                    {
+                                        projetList.map((projet) => <option value={projet['id']} key={projet['id']}>{projet['nom']}</option>)
+                                    }
+                    </select>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={(event) => createTaches(event)}>Save</button>
-            </form>
+                <div className="col-12">
+                    <button type="submit" className="btn btn-primary"  onClick={(event) => createTaches(event)}>Save</button>
+                </div>
+            </form>   
       </div>
        )
 }

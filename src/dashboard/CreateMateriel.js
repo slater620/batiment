@@ -22,30 +22,39 @@ function CreateMateriel({setSpaceName, spaceName}){
         //récupération des valeurs du formulaire
         
         const nom = document.querySelector('#nommateriel').value
+        const denomination =  document.querySelector('#unitemateriel').value
         const quantite = document.querySelector('#quantitemateriel').value
-        const prix = document.querySelector('#prixmateriel').value
+        const prixUnitaire = document.querySelector('#prixmateriel').value
         const dateApprovisionnement = document.querySelector('#dateApprovisionnementmateriel').value     
-        if(!connected){
-            error = true
-            alert(error)
-            
-        }
+       
 
         if(quantite === ""){
             error = true
-            alert(error)
+            alert('entrer la quantite du materiel')
         }
 
         if(nom === ""){
             error = true
-            alert('erreur formulaire')
+            alert('entrer le nom du materiel')
         }
         
         if(dateApprovisionnement === ""){
             error = true
-            alert(error)
+            alert('entrer la date approvisionnement')
         }
-        var materiel = {nom , quantite,prix ,type, dateApprovisionnement,user}
+        
+        if(prixUnitaire === ""){
+            error = true
+            alert('entrer le prix unitaire')
+        }
+
+        if(denomination === ""){
+            error = true
+            alert('entrer unite du materiel')
+        }
+        
+
+        var materiel = {nom ,denomination,quantite,prixUnitaire ,type, dateApprovisionnement,user}
         materiel = JSON.stringify(materiel)
         //création de la requête
         var requestURL = API_URL + "/Stocks/";
@@ -62,60 +71,47 @@ function CreateMateriel({setSpaceName, spaceName}){
             
             if(requestStatus === 403){
                 server_error = true
+                alert('erreur au niveau du serveur... veuillez réessayer')
             
 
             }else if(requestStatus === 201){
                 //requête réussie
                 console.log('gooddd')
-                setSpaceName('listMateriel')
+                alert('le materiel a bien été crée')
             }
         }
         console.log('gooddd')
-        setSpaceName('listMateriel')
         event.preventDefault()
 }
 
-
-
        return (
         <div className="container">
-            <form >
-            <h2 style={{textAlign:"center",marginTop:"1%"}}>CREER UN MATERIEL</h2>
-                <div className="row form-group">
-                    <div className="col-25">
+            <form className="row g-3">
+                <h2 style={{textAlign:"center",marginTop:"1%"}}>CREER UN MATERIEL</h2>
+                <div className="col-md-4">
                         <label >Nom</label>
-                    </div>
-                    <div className="col-75">
                         <input type="text" className="form-control" id="nommateriel" placeholder="nom du materiel"/>
-                    </div>
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
+                <div className="col-md-4">
                         <label >quantite</label>
-                    </div>
-                    <div className="col-75">
                         <input type="number" id="quantitemateriel" className="form-control"  placeholder="quantite du materiel"/>
-                    </div>
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
+                <div className="col-md-4">
+                        <label >Unite</label>
+                        <input type="text" id="unitemateriel" className="form-control"  placeholder="prix unitaire"/>
+                </div>
+                <div className="col-md-4">
                         <label >prix</label>
-                    </div>
-                    <div className="col-75">
                         <input type="number" className="form-control" id="prixmateriel" placeholder="prix du materiel"/>
-                    </div>
                 </div>
 
-                <div className="row form-group"> 
-                    <div className="col-25">
+                <div className="col-md-4"> 
                         <label>date d'approvisionnement</label>
-                    </div>
-                    <div className="col-75">
                         <input type="date" className="form-control" id="dateApprovisionnementmateriel"/>
-                    </div>
                 </div>
-
-                <button type="submit" className="btn btn-primary"  onClick={(event) => createMateriel(event)}>Save</button>
+                <div className="col-12">
+                    <button type="submit" className="btn btn-primary"  onClick={(event) => createMateriel(event)}>Save</button>
+                </div>
             </form>
       </div>
        )

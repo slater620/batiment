@@ -41,14 +41,14 @@ function selectAll(){
     const checked = document.getElementById('selectAll').checked
    
     if(checked){
-        const tmpList = []
-        console.log('supromer')
+      
+    const tmpList = []
         //on coche tous les checkboxs
         projetList.forEach(function(item){
-            console.log(item)
+
             document.getElementById(getCheckboxId(item)).checked = true
             tmpList.push(item['id'])
-
+          
         }
         )
 
@@ -61,6 +61,7 @@ function selectAll(){
             document.getElementById(getCheckboxId(item)).checked = false
         })
     }
+    
 }
 
 //fonction permettant de retrouver l'id d'un élément à partir de l'id du checkbox correspondant//
@@ -78,6 +79,8 @@ function handleCheckboxClick(event)
     if(checked){
         //si le checkbox est coché on récupère l'id de l'élément correspondant et on le stocke dans la lste des éléments sélectionnés de la liste
         setCheckedItems([...checkedItems, getItemIdFromCheckboxId(event.target.id)])
+        console.log(checkedItems)
+        
         
     }else{
         //on retire l'id de l'élément dans la liste des éléments cochés
@@ -90,41 +93,50 @@ function handleCheckboxClick(event)
 }
 
 //fonction pour supprimer la liste des projets sélectionnées//
-function deleteItems(itemsList, checkedItemIndex){
-    console.log('supprimer')
+ function deleteItems(itemsList, checkedItemIndex){
     if(checkedItemIndex < checkedItems.length){
         const itemId = checkedItems[checkedItemIndex]
+
         //création de la requête
         var requestURL = API_URL +"/Projets/" + itemId + "/"
         var request = new XMLHttpRequest();
+        
         request.open('DELETE', requestURL);
         request.setRequestHeader('Authorization' , 'Bearer ' + token);
         request.setRequestHeader('Content-Type' , 'application/json');
         request.responseType = 'json';
         request.send();
+        
         request.onload = function(){
             const requestStatus = request.status
-            console.log('supprimer plusieurs')
+
+            if(requestStatus === 204){
+                //succès de la suppression
+                //on supprime l'élément de la liste des data*/
                 const deletedItemIndex = itemsList.findIndex(item => item['id'] === itemId);
+                
+
                 if(deletedItemIndex > -1){
                     
                     //on retire l'élément supprimé de la liste
                     itemsList = itemsList.filter(function(value, index, arr){
                         return index !== deletedItemIndex
                     })
+                    
                     setProjetList(itemsList)
+                    
+
                     deleteItems(itemsList, checkedItemIndex + 1)
                 }
-             }
-
+            }
+        }
 
     }else{
         
         //on vide la liste des éléments sélectionnés
         setCheckedItems([])
     }
-
-}
+}  
 
 //fonction permettant de supprimer un élément ayant son id//
 function deleteItem(itemId){
@@ -194,8 +206,8 @@ function deleteItem(itemId){
                         <th scope="col" >date de creation</th>
                         <th scope="col">date de modification</th>
                         <th className="hover-pointer" scope="col">
-                            <a id="delete"  data-toggle="modal" data-target="#myModal" style={{color:"black"}}  onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les projets selectionnés?')}
-                                    style={{marginRight:"10px"}} >
+                            <a id="delete"  data-toggle="modal" data-target="#myModal" style={{marginRight:"10px"}}  onClick={(event) => setConfirmAlertMsg('voulez vous supprimer les projets selectionnés?')}
+                                     >
                                 <span className="material-icons md-48" title="supprimer">delete</span>
                             </a>
                         </th>
@@ -229,15 +241,14 @@ function deleteItem(itemId){
     
                                                 if(parentTagName === "TR" || parentTagName === "TD"){
                                                     setItemData(projet)
-                                                    setSpaceName('detail')
-                                                    
+                                                
                                                 }
                                                
                                             }} >
                                             
                                             <td>
                                                 <span>
-                                                    <input type="checkbox" id={getCheckboxId(projet)} onClick={(event)=>handleCheckboxClick(event)}></input>
+                                                    <input type="checkbox" id={getCheckboxId(projet)}onClick={(event) =>{handleCheckboxClick(event)}}></input>
                                                 </span>
                                             </td>
                                             <td className="col-3 text">{projet['nom']}</td>
@@ -248,14 +259,11 @@ function deleteItem(itemId){
                                                 <a className="item-delete material-icons md-48 delete-icon" data-toggle="modal" data-target="#myModal" id={getDeleteButtonId(projet)}   title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
                                                     setCheckedItems([])
-                                                    setSelectedItemId(projet['id'])
-                                                    console.log(selectedItemId)
                                                     //affichage du popup de confirmation
-                                                    document.getElementById(getDeleteButtonId(projet))
-                                                    //document.getElementById('id01').style.display='block'
-                                                    setConfirmAlertMsg('voulez vous supprimer le projet :' + projet['nom'] + '?')
-                                                
-                                                    
+                                                    document.getElementById(getDeleteButtonId(projet)) 
+                                                    setConfirmAlertMsg('voulez vous supprimer le projet'+ projet['nom']+'?')
+                                                    setSelectedItemId(projet['id'])                      
+                                                    console.log('bonkkkkk')                           
                                                 }} style={{marginRight:"10px"}}>
                                                     <span className="material-icons md-48 delete-icon">delete</span>
                                                 </a>
@@ -306,13 +314,12 @@ function deleteItem(itemId){
                       </div>
                       <div className="modal-footer row">
                         <div className='col'>
-                            <button type="button" data-dismiss="modal" className="deletebtn" onClick={() => {
-                                            console.log(checkedItems)
+                            <button type="button" data-dismiss="modal" className="deletebtn" onClick={() => { 
+                                            
                                             
                                                 if(checkedItems.length > 0){
                                                     //on supprime les éléments sélectionnés
-                                                    deleteItems(projetList, 0)
-                                                
+                                                        deleteItems(projetList, 0)
                                                 }
                                                 else{
                                                     console.log(selectedItemId);
@@ -324,7 +331,7 @@ function deleteItem(itemId){
                                             }}>Delete</button>
                         </div>
                         <div className='col'>
-                        <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                       </div>
                     </div>

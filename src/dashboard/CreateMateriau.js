@@ -26,30 +26,37 @@ function CreateMateriau({setSpaceName, spaceName}){
         
         const nom = document.querySelector('#nommateriau').value
         const quantite = document.querySelector('#quantitemateriau').value
-        const prix = document.querySelector('#prixmateriau').value
+        const denomination =  document.querySelector('#unitemateriau').value
+        const prixUnitaire = document.querySelector('#prixmateriau').value
         const dateApprovisionnement = document.querySelector('#dateApprovisionnement').value     
-        if(!connected){
-            error = true
-            alert(error)
-            
-        }
 
         if(quantite === ""){
             error = true
-            alert(error)
+            alert('entrer la quantite du materiau')
         }
 
         if(nom === ""){
             error = true
-            alert(error)
+            alert('entrer le nom du materiau')
         }
         
         if(dateApprovisionnement === ""){
             error = true
-            alert(error)
+            alert('entrer la date approvisionnement')
         }
-        var stock = {nom , quantite,prix ,type, dateApprovisionnement,user}
-        stock = JSON.stringify(stock)
+        
+        if(prixUnitaire === ""){
+            error = true
+            alert('entrer le prix unitaire')
+        }
+
+        if(denomination === ""){
+            error = true
+            alert('entrer unite du materiau')
+        }
+        
+        var materiau = {nom ,denomination,quantite,prixUnitaire ,type, dateApprovisionnement,user}
+        materiau = JSON.stringify(materiau)
         //création de la requête
         var requestURL = API_URL + "/Stocks/";
         var request = new XMLHttpRequest();
@@ -57,25 +64,25 @@ function CreateMateriau({setSpaceName, spaceName}){
         request.setRequestHeader('Content-Type' , 'application/json');
         request.setRequestHeader('Authorization' , 'Bearer ' + token);
         request.responseType = 'json';
-        request.send(stock);
+        request.send(materiau);
         console.log(request.status)
-        console.log(stock);
+        console.log(materiau);
         request.onload = function(){
             
             const requestStatus = request.status
             
             if(requestStatus === 403){
                 server_error = true
+                alert('erreur au niveau du serveur... veuillez réessayer')
             
 
             }else if(requestStatus === 201){
                 //requête réussie
                 console.log('gooddd')
-                setSpaceName('listMateriau')
+                alert('le materiau a bien été crée')
             }
         }
         console.log('gooddd')
-        setSpaceName('listMateriau')
         event.preventDefault()
 }
 
@@ -83,46 +90,34 @@ function CreateMateriau({setSpaceName, spaceName}){
 
        return (
         <div className="container">
-            <form >
-            <h2 style={{textAlign:"center",marginTop:"1%"}}>CREER UN MATERIAU</h2>
-                <div className="row form-group">
-                    <div className="col-25">
-                        <label >Nom</label>
-                    </div>
-                    <div className="col-75">
-                        <input type="text" className="form-control" id="nommateriau" placeholder="nom du materiau"/>
-                    </div>
+            <form className="row g-3">
+                <h2 style={{textAlign:"center",marginTop:"1%"}}>CREER UN MATERIAU</h2>
+                <div className="col-md-4">
+                    <label >Nom</label>
+                    <input type="text" className="form-control" id="nommateriau" placeholder="nom du materiau"/>
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
+                <div className="col-md-4">
                         <label >quantite</label>
-                    </div>
-                    <div className="col-75">
                         <input type="number" id="quantitemateriau" className="form-control"  placeholder="quantite de materiau"/>
-                    </div>
                 </div>
-                <div className="row form-group">
-                    <div className="col-25">
+                <div className="col-md-4">
+                        <label >Unite</label>
+                        <input type="text" id="unitemateriau" className="form-control"  placeholder="prix unitaire"/>
+                </div>
+                <div className="col-md-4">
                         <label >prix</label>
-                    </div>
-                    <div className="col-75">
                         <input type="number" className="form-control" id="prixmateriau"  placeholder="prix du materiau"/>
-                    </div>
                 </div>
 
-                <div className="row form-group"> 
-                    <div className="col-25">
+                <div className="col-md-4"> 
                         <label>date d'approvisionnement</label>
-                    </div>
-                    <div className="col-75">
                         <input type="date" className="form-control" id="dateApprovisionnement"/>
-                    </div>
                 </div>
-
-                <button type="submit" className="btn btn-primary"  onClick={(event) => createMateriaux(event)}>Save</button>
+                <div className="col-12">
+                    <button type="submit" className="btn btn-primary"  onClick={(event) => createMateriaux(event)}>Save</button>
+                </div>
+               
             </form>
-      </div>
-       )
-}
-
+        </div>)
+};
 export default CreateMateriau; 
