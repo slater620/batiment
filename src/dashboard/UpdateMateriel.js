@@ -1,5 +1,5 @@
 import "./form.css"
-import { API_URL } from "../authentification/Signup"
+import { API_URL } from "../Components/Signup"
 
 function UpdateMateriel({setSpaceName, spaceName,itemToUpdate,setItemToUpdate,materielList,setMaterielList}){
 

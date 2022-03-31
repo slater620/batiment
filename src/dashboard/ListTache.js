@@ -1,6 +1,6 @@
-import { API_URL } from '../authentification/Signup'
+import { API_URL } from '../Components/Signup'
 import {useState} from 'react'
-import "./list.css"
+//import "./list.css"
 
 function ListTache({materiauList,setMateriauList,materielList,setMaterielList,setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, tacheList,setTacheList}){
 
@@ -281,17 +281,7 @@ function deleteItem(itemId){
                                                 document.getElementById(getDeleteButtonId(tache)).style.visibility = "hidden"
                                                 document.getElementById(getUpdateButtonId(tache)).style.visibility = "hidden"
                                                 document.getElementById('buttonallouer').style.visibility = "hidden"
-                                            }}
-                                            onClick={(event)=>{
-                                                const parentTagName = event.target.parentElement.tagName
-    
-                                                if(parentTagName === "TR" || parentTagName === "TD"){
-                                                    setItem(tache)
-                                                    
-                                                    
-                                                }
-                                               
-                                            }} >
+                                            }}>
                     
                                             
                                             <td>
@@ -326,9 +316,9 @@ function deleteItem(itemId){
                                                 }}>
                                                     <span className="material-icons md-48 delete-icon">edit</span>
                                                 </a>
-                                                <a   data-toggle="modal" id='buttonallouer'  data-target="#allouer" className="add-icon" href="#" title='allouer'
-                                                     onClick={(event) =>{ setItemData(tache) ; event.preventDefault()}}>
-                                                    <span className="material-icons md-48 ">allouer</span></a>
+                                                <button  data-toggle="modal" data-target="#allouer" onClick={(event) =>{ setItemData(tache) ; event.preventDefault()}}>
+                                                    Allouer un stock
+                                                </button>
                                                 
                                             </td>
                                         </tr>
@@ -420,7 +410,10 @@ function deleteItem(itemId){
                                         <div class="col-75">
                                             <select id="stockallouer" className="form-control select-input">
                                                 {
-                                                    stockList.map((stock) => <option value={stock['id']} key={stock['id']}>{stock['nom']}</option>)
+                                                    materiauList.map((stock) => <option value={stock['id']} key={stock['id']}>{stock['nom']}</option>)
+                                                }
+                                                 {
+                                                    materielList.map((materiel) => <option value={materiel['id']} key={materiel['id']}>{materiel['nom']}</option>)
                                                 }
                                             </select>
                                         </div>
@@ -429,7 +422,7 @@ function deleteItem(itemId){
 
                                 <div className="modal-footer row">
                                     <div className='col'>
-                                        <button type="submit" data-dismiss="modal" className="deletebtn" onClick={(event) => {Allouer(event)}}>commander</button>
+                                        <button type="submit" data-dismiss="modal" className="deletebtn" onClick={(event) => {Allouer(event)}}>ALLOUER</button>
                                     </div>
                                     <div className='col'>
                                         <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>

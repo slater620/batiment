@@ -1,8 +1,8 @@
-import { API_URL } from '../authentification/Signup'
+import { API_URL } from '../Components/Signup'
 import {useState} from 'react'
-import "./list.css"
+//import "./list.css"
 
-function TacheProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, tacheList,setTacheList}){
+function TacheProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData,tacheList,setTacheList}){
 
 
     //etat contenant la liste des éléments cochés de la liste
@@ -18,6 +18,9 @@ function TacheProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setIt
     //etat contenant l'ID de l'élément de la liste sélectionné pour une action
     const [item, setItem] = useState('')
 
+    //etat contenant l'ID de l'élément de la liste sélectionné pour une action
+    const [tacheProjetList, setTacheProjetList] = useState([])
+
     var token = localStorage.getItem("token")
 
     //fonction permettant de construire l'id du checkboxList d'un élément de la liste//
@@ -25,6 +28,24 @@ function TacheProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setIt
     return 'checkbox_' + item['id']
 }
 
+//fonction permettant de récupérer la liste des taches
+function getTaches(){
+ 
+    //construction de la requete
+   var requestUrl = API_URL +"/Taches"
+   //création de la requête
+   var request = new XMLHttpRequest();
+   request.open('GET', requestUrl);
+   token = localStorage.getItem("token")
+   request.setRequestHeader('Authorization' , 'Bearer ' + token);
+   request.setRequestHeader('Content-Type' , 'application/json');
+   request.responseType = 'json';
+   request.send(); 
+   request.onload = function(){
+       setTacheList(request.response);
+   }  
+            
+} 
 //fonction permettant de construire l'id du bouton de suppression d'un élément//
 function getDeleteButtonId(item){
     return 'deleteButton_' + item['id']
@@ -45,7 +66,7 @@ function selectAll(){
         const tmpList = []
 
         //on coche tous les checkboxs
-        tacheList.forEach(function(item){
+        tacheProjetList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = true
             tmpList.push(item['id'])
         })
@@ -55,7 +76,7 @@ function selectAll(){
         setCheckedItems([])
 
         //on décoche tous les checkboxs
-        tacheList.forEach(function(item){
+        tacheProjetList.forEach(function(item){
             document.getElementById(getCheckboxId(item)).checked = false
         })
     }
@@ -114,7 +135,7 @@ function deleteItems(itemsList, checkedItemIndex){
                         return index !== deletedItemIndex
                     })
                     
-                    setTacheList(itemsList)
+                    setTacheProjetList(itemsList)
                     
 
                     deleteItems(itemsList, checkedItemIndex + 1)
@@ -127,6 +148,8 @@ function deleteItems(itemsList, checkedItemIndex){
         //on vide la liste des éléments sélectionnés
         setCheckedItems([])
     }
+    getTaches()
+    getTacheProjet()
 
 }
 
@@ -147,27 +170,29 @@ function deleteItem(itemId){
         console.log("supprimer un")
             //succès de la suppression
             //on supprime l'élément de la liste des data*/
-            const deletedItemIndex = tacheList.findIndex(item => item['id'] === itemId);
+            const deletedItemIndex = tacheProjetList.findIndex(item => item['id'] === itemId);
 
             if(deletedItemIndex > -1){
                 
                 //on retire l'élément supprimé de la liste
-                const itemsList = tacheList.filter(function(value, index, arr){
+                const itemsList = tacheProjetList.filter(function(value, index, arr){
                     return index !== deletedItemIndex
                 })
                 
-                setTacheList(itemsList)
-                console.log(tacheList)
+                setTacheProjetList(itemsList)
+               
             }
 
              //on vide la liste des éléments sélectionnés
             setCheckedItems([])
         }
+        getTaches()
+        getTacheProjet()
 }
 
 
     //fonction permettant de récupérer la liste des taches
-    function getTaches(itemId){
+    function getTacheProjet(itemId){
  
          //construction de la requete
         var requestUrl = API_URL +"/Taches/projet/" + itemId + "/"
@@ -180,8 +205,10 @@ function deleteItem(itemId){
         request.responseType = 'json';
         request.send(); 
         request.onload = function(){
-            setTacheList(request.response);
-        }  
+            console.log(request.response)
+            setTacheProjetList(request.response);
+        } 
+        getTaches() 
                  
      } 
 
@@ -200,7 +227,7 @@ function deleteItem(itemId){
                         <th>Debut</th>
                         <th>Fin</th>
                         <th className="hover-pointer">
-                            <a id="delete" style={{color:"black"}} onClick={() => {
+                            <a id="delete"  onClick={() => {
                                 document.getElementById('id01').style.display='block'}}
                                     style={{marginRight:"10px"}}>
                                 <span className="material-icons md-48" title="supprimer">delete</span>
@@ -209,7 +236,7 @@ function deleteItem(itemId){
                         <th>
                         <span className="hover-pointer fa fa-refresh" title="rafraîchir" style={{fontSize:"x-large"}} onClick={() =>{
                                 //on rafraîchi la liste
-                                getTaches(itemData['id'])
+                                getTacheProjet(itemData['id'])
                                 
                             }}></span>
                         </th>
@@ -219,7 +246,7 @@ function deleteItem(itemId){
                     </thead>
                             <tbody>
                                 {
-                                    tacheList.map((tache) => ( 
+                                    tacheProjetList.map((tache) => ( 
                                         <tr className="list-item no-gutters" key={tache['id']} id={tache['id']} 
                                             onMouseOver={()=>{
                                                 //on affiche le bouton de suppression de l'élément survolé
@@ -240,8 +267,6 @@ function deleteItem(itemId){
                                                 }
                                                
                                             }} >
-                    
-                                            
                                             <td>
                                                 <span>
                                                     <input type="checkbox" id={getCheckboxId(tache)} onClick={(event)=>handleCheckboxClick(event)}></input>
@@ -252,7 +277,7 @@ function deleteItem(itemId){
                                             <td className="col-2 text">{tache['dateDebut']}</td>
                                             <td className="col-2 text">{tache['dateFin']}</td>
                                             <td className="col-1 vertical-center">
-                                                <a className="item-delete material-icons md-48 delete-icon" id={getDeleteButtonId(tache)}  title="supprimer" onClick={(event) =>{
+                                                <a   data-toggle="modal" data-target="#myModal" style={{marginRight:"10px"}} className="item-delete material-icons md-48 delete-icon" id={getDeleteButtonId(tache)}  title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
                                                     setCheckedItems([])
 
@@ -262,7 +287,7 @@ function deleteItem(itemId){
                                                     setConfirmAlertMsg("Voulez-vous supprimer la tache " + tache['nom'] + " ?")
                                                 
                                                     setSelectedItemId(tache['id'])
-                                                }} style={{marginRight:"10px"}}>
+                                                }}>
                                                     <span className="material-icons md-48 delete-icon">delete</span>
                                                 </a>
                                                 <a className="update-icon item-update" id={getUpdateButtonId(tache)}
@@ -296,35 +321,48 @@ function deleteItem(itemId){
             {
                 tableauTaches()
             }
-            {
-            <div id="id01" className="modal">
-                <span onClick={() => {document.getElementById('id01').style.display='none'}} className="close" title="Close Modal">&times;</span>
-                <form className="modal-content" >
-                  <div className="container">
-                    <h1>Delete </h1>
-                    <p>Are you sure you want to delete?</p>
-              
-                    <div className="clearfix">
-                      <button type="button" onClick={() => {document.getElementById('id01').style.display='none'}} className="cancelbtn">Cancel</button>
-                      <button type="button" className="deletebtn" onClick={() => {
+             {
+               
+               <div id="myModal" className="modal fade" role="dialog">
+                 <div class="modal-dialog">
+               
+                   
+                   <div className="modal-content">
+                     <div className="modal-header">
+                       <span style={{display:"none"}}>&times;</span>
+                       <h4 style={{ marginLeft:'40%' }} className="modal-title">Delete</h4>
+                     </div>
+                     <div className="modal-body">
+                       <p> {confirmAlertMsg} </p>
+                     </div>
+                     <div className="modal-footer row">
+                       <div className='col'>
+                           <button type="button" data-dismiss="modal" className="deletebtn" onClick={() => { 
+                                           
+                                           
+                                               if(checkedItems.length > 0){
+                                                   //on supprime les éléments sélectionnés
+                                                       deleteItems(tacheProjetList, 0)
+                                               }
+                                               else{
+                                                   console.log(selectedItemId);
+                                                   //on supprime l'élément sélectionné
+                                                   deleteItem(selectedItemId)
+                   
+                                               }
+                                               
+                                           }}>Delete</button>
+                       </div>
+                       <div className='col'>
+                           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                       </div>
+                     </div>
+                   </div>
+               
+                 </div>
+               </div>
+           }
 
-                                if(checkedItems.length > 0){
-                                    //on supprime les éléments sélectionnés
-                                    deleteItems(tacheList, 0)
-                                    document.getElementById('id01').style.display='none'
-                                }
-                                else{
-                                    //on supprime l'élément sélectionné
-                                    deleteItem(selectedItemId)
-                                    document.getElementById('id01').style.display='none'
-                                }
-                                
-                            }}>Delete</button>
-                    </div>
-                  </div>
-                </form>
-            </div>
-            }
                      
     </div>
 );

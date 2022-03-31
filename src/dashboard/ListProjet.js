@@ -1,6 +1,6 @@
-import { API_URL } from '../authentification/Signup';
+import { API_URL } from '../Components/Signup';
 import {useState} from 'react'
-import "./list.css"
+//import "./list.css"
 
 function ListProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, projetList,setProjetList}){
     
@@ -34,6 +34,10 @@ function getDeleteButtonId(item){
 //fonction permettant de construire l'id du bouton de mise à jour d'un élément//
 function getUpdateButtonId(item){
     return 'updateButton_' + item['id']
+}
+//fonction permettant de construire l'id du bouton de mise à jour d'un élément//
+function getAddButtonId(item){
+    return 'addButton_' + item['id']
 }
 
 //fonction permettant de sélectionner tous les éléments de la liste
@@ -230,20 +234,13 @@ function deleteItem(itemId){
                                                 //on affiche le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(projet)).style.visibility = "visible"
                                                 document.getElementById(getUpdateButtonId(projet)).style.visibility = "visible"
+                                                document.getElementById(getAddButtonId(projet)).style.visibility = "visible"
                                             }}
                                             onMouseOut={() =>{
                                                 //on retire le bouton de suppression de l'élément survolé
                                                 document.getElementById(getDeleteButtonId(projet)).style.visibility = "hidden"
                                                 document.getElementById(getUpdateButtonId(projet)).style.visibility = "hidden"
-                                            }}
-                                            onClick={(event)=>{
-                                                const parentTagName = event.target.parentElement.tagName
-    
-                                                if(parentTagName === "TR" || parentTagName === "TD"){
-                                                    setItemData(projet)
-                                                
-                                                }
-                                               
+                                                document.getElementById(getAddButtonId(projet)).style.visibility = "hidden"
                                             }} >
                                             
                                             <td>
@@ -267,7 +264,7 @@ function deleteItem(itemId){
                                                 }} style={{marginRight:"10px"}}>
                                                     <span className="material-icons md-48 delete-icon">delete</span>
                                                 </a>
-                                                <a className="update-icon item-update" id={getUpdateButtonId(projet)}
+                                                <a className="update-icon item-update" title='modifier' id={getUpdateButtonId(projet)}
                                                 onClick={(event) =>{
                                                     setSpaceName('updateProjet')
                                                     
@@ -276,7 +273,13 @@ function deleteItem(itemId){
                                                 }}>
                                                     <span className="material-icons md-48 delete-icon">edit</span>
                                                 </a>
-                                                
+                                                <a className="material-icons-outlined " title='consulter les taches du projet' id={getAddButtonId(projet)}
+                                                onClick={(event) =>{
+                                                    setSpaceName('detail')
+                                                    setItemData(projet)
+                                                    event.preventDefault()}}>
+                                                    <span class="material-icons">add</span>
+                                                </a>
                                             </td>
                                         </tr>
                                         ))

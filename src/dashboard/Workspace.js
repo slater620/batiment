@@ -35,7 +35,7 @@ function Workspace({spaceName,setSpaceName , itemData,setItemData,itemToUpdate,s
             break;
  
         case 'listTache':
-            return <ListTache itemData={ itemData } setItemData={setItemData} setTacheList={ setTacheList } tacheList={tacheList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
+            return <ListTache  setMateriauList={ setMateriauList } materiauList={ materiauList} setMaterielList={ setMaterielList } materielList={ materielList} itemData={ itemData } setItemData={setItemData} setTacheList={ setTacheList } tacheList={tacheList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName} setSpaceName={setSpaceName} />
             break;
         case 'createTache':
             return <CreateTache projetList={projetList} setProjetList={setProjetList} spaceName= {spaceName} setSpaceName={setSpaceName} />

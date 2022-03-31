@@ -1,5 +1,5 @@
 import "./form.css"
-import { API_URL } from "../authentification/Signup"
+import { API_URL } from "../Components/Signup"
 function UpdateProjet({setSpaceName,spaceName,itemToUpdate,setItemToUpdate,projetList,setProjetList}){
     
 //fonction de modification d'un projet

@@ -19,11 +19,11 @@ display: inline-block;
 .item-delete:hover{
     cursor:pointer;
 }
+#delete:hover{
+  cursor:pointer;
+}
 
 /*mise en forme du bouton de mise à jour d'un élément de la liste*/
-.item-update{
-    visibility:hidden;
-}
 
 .update-icon{
     color: rgba(0, 0, 0, 0.6);
@@ -35,9 +35,7 @@ display: inline-block;
 
 /*mise en forme du bouton de commande d'un élément de la liste*/
 
-.item-add{
-  visibility:hidden;
-}
+
 
 .add-icon{
   color: rgba(0, 0, 0, 0.6);

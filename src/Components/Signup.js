@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useHistory } from 'react-router-dom';
 import React from "react";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
@@ -8,6 +7,7 @@ var validator = require("email-validator");
 var passwordValidator = require('password-validator');
 export const API_URL="https://btp-api-gi.herokuapp.com"
 
+
 function Signup(){
     //variable utiles pour le routage
     let history = useHistory();   
@@ -15,7 +15,6 @@ function Signup(){
     //function to check the validity of the form before the storage of data
     function formValidation(){
       var form;
-
       //retrieve data from the formular
       const firstname = document.getElementById("firstname").value
       const lastname = document.getElementById("lastname").value

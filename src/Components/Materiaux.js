@@ -1,8 +1,10 @@
 import { API_URL } from '../Components/Signup';
 import {useState} from 'react'
-//import "./list.css"
+import Header from './Header';
+import ProjetHeader from './ProjetHeader';
+import "./list.css"
 
-function ListMateriau({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, materiauList,setMateriauList}){
+function Materiaux({setItemData,itemData, materiauList,setMateriauList}){
 
      //variable qui signale la présence d'une erreur dans le formulaire
      var error = false
@@ -13,6 +15,9 @@ function ListMateriau({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setI
 
     //etat contenant la liste des éléments cochés de la liste
     const [checkedItems, setCheckedItems] = useState([])
+
+      //etat contenant la liste des éléments cochés de la liste
+      const [itemToUpdate, setItemToUpdate] = useState([])
     
     //etat contenant le message à afficher dans l'alerte de confirmation
     const [confirmAlertMsg, setConfirmAlertMsg] = useState('')
@@ -24,6 +29,7 @@ function ListMateriau({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setI
     const [item, setItem] = useState('')
 
     var token = localStorage.getItem("token")
+    var user = localStorage.getItem("user")
 
     //fonction permettant de construire l'id du checkboxList d'un élément de la liste//
    function getCheckboxId(item){
@@ -130,6 +136,7 @@ function deleteItems(itemsList, checkedItemIndex){
         //on vide la liste des éléments sélectionnés
         setCheckedItems([])
     }
+    getStocks()
 
 }
 
@@ -147,12 +154,14 @@ function deleteItem(itemId){
     request.onload = function(){
         const requestStatus = request.status
         console.log(request.response)
+        getStocks()
         console.log("supprimer un")
         createMotif()
-
+     
              //on vide la liste des éléments sélectionnés
             setCheckedItems([])
         }
+        getStocks()
 }
     //fonction permettant de creer un motif  ayant son id//
     function createMotif(itemId){
@@ -179,6 +188,76 @@ function deleteItem(itemId){
             }
         }
     }
+    
+    //fonctions de creation d'un stock
+    const updateMateriau = (event) => {
+        //récupération des valeurs du formulaire
+        const nom = document.querySelector('#nommateriauupdate').value
+        const quantite = document.querySelector('#quantitemateriauupdate').value
+        const denomination =  document.querySelector('#unitemateriauupdate').value
+        const prixUnitaire = document.querySelector('#prixmateriauupdate').value
+        const dateApprovisionnement = document.querySelector('#datemateriauupdate').value
+        const type =  'Materiau'     
+
+        if(quantite === ""){
+            error = true
+            alert('entrer la quantite du materiau')
+        }
+
+        if(nom === ""){
+            error = true
+            alert('entrer le nom du materiau')
+        }
+        
+        if(dateApprovisionnement === ""){
+            error = true
+            alert('entrer la date approvisionnement')
+        }
+        
+        if(prixUnitaire === ""){
+            error = true
+            alert('entrer le prix unitaire')
+        }
+
+        if(denomination === ""){
+            error = true
+            alert('entrer unite du materiau')
+        }
+        
+        var user = localStorage.getItem("user")
+        var materiau = {nom ,denomination,quantite,prixUnitaire ,type, dateApprovisionnement,user}
+        materiau = JSON.stringify(materiau)
+        //construction de la requete
+        var requestUrl = API_URL +"/Stocks/" + itemToUpdate['id'] + "/";
+        var request = new XMLHttpRequest();
+        request.open('PATCH', requestUrl);
+        request.setRequestHeader('Content-Type' , 'application/json');
+        request.setRequestHeader('Authorization' , 'Bearer ' + token);
+        request.responseType = 'json';
+        request.send(materiau);
+        console.log(request.status)
+        console.log(materiau);
+        request.onload = function(){
+            
+            const requestStatus = request.status
+            console.log(requestStatus)
+            
+            if(requestStatus === 403){
+                server_error = true
+            
+
+            }
+            else if(requestStatus === 201){
+                //requête réussie
+                console.log('gooddd')
+                const index = materiauList.findIndex(stock => stock['id'] === itemToUpdate['id'])
+                alert('le materiau a été modifié')
+            }
+            
+        }
+        getStocks()
+        event.preventDefault();
+}
 
     //fonction permettant de récupérer la liste des stocks
     function getStocks(){
@@ -211,11 +290,84 @@ function deleteItem(itemId){
         }           
      }
 
-    function tableauStocks(){
+
+        //fonctions de creation d'un stock
+        const createMateriaux = (event) => {
+            console.log('ok')
+            console.log(token)
+            console.log(user)
+            const type =  "Materiau"
+            //récupération des valeurs du formulaire
+            
+            const nom = document.querySelector('#nommateriau').value
+            const quantite = document.querySelector('#quantitemateriau').value
+            const denomination =  document.querySelector('#unitemateriau').value
+            const prixUnitaire = document.querySelector('#prixmateriau').value
+            const dateApprovisionnement = document.querySelector('#dateApprovisionnement').value     
+            const projet = itemData['id']
+            if(quantite === ""){
+                error = true
+                alert('entrer la quantite du materiau')
+            }
+    
+            if(nom === ""){
+                error = true
+                alert('entrer le nom du materiau')
+            }
+            
+            if(dateApprovisionnement === ""){
+                error = true
+                alert('entrer la date approvisionnement')
+            }
+            
+            if(prixUnitaire === ""){
+                error = true
+                alert('entrer le prix unitaire')
+            }
+    
+            if(denomination === ""){
+                error = true
+                alert('entrer unite du materiau')
+            }
+            
+            var materiau = {nom ,denomination,quantite,prixUnitaire ,type, dateApprovisionnement,projet,user}
+            materiau = JSON.stringify(materiau)
+            //création de la requête
+            var requestURL = API_URL + "/Stocks/";
+            var request = new XMLHttpRequest();
+            request.open('POST', requestURL);
+            request.setRequestHeader('Content-Type' , 'application/json');
+            request.setRequestHeader('Authorization' , 'Bearer ' + token);
+            request.responseType = 'json';
+            request.send(materiau);
+            console.log(request.status)
+            console.log(materiau);
+            request.onload = function(){
+                
+                const requestStatus = request.status
+                
+                if(requestStatus === 403){
+                    server_error = true
+                    alert('erreur au niveau du serveur... veuillez réessayer')
+                
+    
+                }else if(requestStatus === 201){
+                    //requête réussie
+                    console.log('gooddd')
+                    alert('le materiau a bien été crée')
+                }
+            }
+            console.log('gooddd')
+            getStocks()
+            event.preventDefault()
+    }
+
+    function tableauMateriau(){
         
          return(
              <div>
-               <table className="table">
+                 <h5 style={{textAlign:"center"}}>LISTE DES MATERIAUX</h5>
+               <table className="table table-hover">
                     <thead class="thead-dark">
                     <tr>
                         <th className="col-1 text bold" style={{paddingLeft:"15px"}}>
@@ -223,6 +375,7 @@ function deleteItem(itemId){
                         </th>
                         <th scope="col">Nom</th>
                         <th scope="col">quantite</th>
+                        <th scope="col">Unite</th>
                         <th scope="col" >date d'approvisionnement</th>
                         <th scope="col">date de modification</th>
                         <th className="hover-pointer" scope="col">
@@ -245,26 +398,7 @@ function deleteItem(itemId){
                             <tbody>
                                 {
                                     materiauList.map((materiau) => (
-                                        <tr className="list-item no-gutters" key={materiau['id']} id={materiau['id']} 
-                                            onMouseOver={()=>{
-                                                //on affiche le bouton de suppression de l'élément survolé
-                                                document.getElementById(getDeleteButtonId(materiau)).style.visibility = "visible"
-                                                document.getElementById(getUpdateButtonId(materiau)).style.visibility = "visible"
-                                            }}
-                                            onMouseOut={() =>{
-                                                //on retire le bouton de suppression de l'élément survolé
-                                                document.getElementById(getDeleteButtonId(materiau)).style.visibility = "hidden"
-                                                document.getElementById(getUpdateButtonId(materiau)).style.visibility = "hidden"
-                                            }}
-                                            onClick={(event)=>{
-                                                const parentTagName = event.target.parentElement.tagName
-    
-                                                if(parentTagName === "TR" || parentTagName === "TD"){
-                                                    setItem(materiau)
-                                                    
-                                                }
-                                               
-                                            }} >
+                                        <tr>
                                             
                                             <td>
                                                 <span>
@@ -273,32 +407,23 @@ function deleteItem(itemId){
                                             </td>
                                             <td className="col-3 text">{materiau['nom']}</td>
                                             <td className="col-2 text">{materiau['quantite']}</td>
+                                            <td className="col-2 text">{materiau['denomination']}</td>
                                             <td className="col-2 text">{materiau['dateApprovisionnement']}</td>
                                             <td className="col-3 text">{materiau['updatedAt']}</td>
                                             <td className="col-1 vertical-center">
-                                                <a className="item-delete material-icons md-48 delete-icon"  data-toggle="modal" data-target="#myModal" id={getDeleteButtonId(materiau)}  title="supprimer" onClick={(event) =>{
+                                                <a   data-toggle="modal" data-target="#myModal" id={getDeleteButtonId(materiau)}  title="supprimer" onClick={(event) =>{
                                                     //on vide la liste des checkbox sélectionnés
                                                     setCheckedItems([])
-
-                                                    //affichage du popup de confirmation
-                                                    document.getElementById(getDeleteButtonId(materiau))
-                                                   
                                                     setConfirmAlertMsg("Voulez-vous supprimer le materiau " + materiau['nom'] + " ?")
                                                 
                                                     setSelectedItemId(materiau['id'])
                                                 }} style={{marginRight:"10px"}}>
                                                     <span className="material-icons md-48 delete-icon">delete</span>
                                                 </a>
-                                                <a className="update-icon item-update" id={getUpdateButtonId(materiau)}
-                                                onClick={(event) =>{
-                                                    setSpaceName('updateMateriau')
-                                                    
-                                                    setItemToUpdate(materiau)
-                                                    event.preventDefault()
-                                                }}>
+                                                <a className="update-icon item-update" data-toggle="modal" data-target="#updatemateriau" id={getUpdateButtonId(materiau)} onClick={(event) =>{setItemToUpdate(materiau); event.preventDefault()}}>
                                                     <span className="material-icons md-48 delete-icon">edit</span>
                                                 </a>
-                                        </td>
+                                            </td>
                                             
                 
                                         </tr>
@@ -312,14 +437,22 @@ function deleteItem(itemId){
             
    }
    return (
-    <div className="container"> 
-            <div className="row">
-                <div className="col"><h4 className="col-4" style={{marginTop:"1.5%",marginBottom:"1%"}}>Liste des Materiaux</h4></div>
-                <div className="col"> <button className="btn btn-primary btn-block"   style={{marginTop:"1.5%",marginBottom:"1%"}}  onClick={(event) => setSpaceName('createMateriau')}>Creer un Materiau</button></div>
-            </div>   
-            {
-                tableauStocks()
-            }
+    <div className="container-fluid"> 
+             <div>  <Header/> </div>   
+            <div style={{marginTop:"1.5%"}} className="row"> 
+                <div className="col" style={{marginRight:"25%" , marginLeft:"35%"}}>
+                    <h3>{itemData['nom']}</h3>
+                </div>
+                <div className="col" >
+                    <button data-toggle="modal" data-target="#creermateriau" type="submit" className="btn btn-primary">NOUVEAU MATERIAU</button>
+                </div>
+            </div>
+            <div> <ProjetHeader/> </div>
+            <div className="container">
+                {
+                    tableauMateriau()
+                }
+            </div>
             {
                
                <div id="myModal" className="modal fade" role="dialog">
@@ -372,7 +505,7 @@ function deleteItem(itemId){
                                            }}>Delete</button>
                        </div>
                        <div className='col'>
-                       <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
                        </div>
                      </div>
                    </div>
@@ -380,9 +513,111 @@ function deleteItem(itemId){
                  </div>
                </div>
             }
+            
+           {
+               
+               <div id="creermateriau" className="modal fade" role="dialog">
+                 <div class="modal-dialog">
+                   <div className="modal-content">
+                     <div className="modal-header">
+                       <span style={{display:"none"}}>&times;</span>
+                       <h4 style={{ textAlign:'center' }} className="modal-title">CREER UN MATERIAU </h4>
+                     </div>
+                     <div className="modal-body">
+                        <form className="row g-3">
+                            <div className="col-md-4">
+                                <label >Nom</label>
+                                <input type="text" className="form-control" id="nommateriau" placeholder="nom du materiau"/>
+                            </div>
+                            <div className="col-md-4">
+                                    <label >quantite</label>
+                                    <input type="number" id="quantitemateriau" className="form-control"  placeholder="quantite de materiau"/>
+                            </div>
+                            <div className="col-md-4">
+                                    <label >Unite</label>
+                                    <input type="text" id="unitemateriau" className="form-control"  placeholder="prix unitaire"/>
+                            </div>
+                            <div className="col-md-4">
+                                    <label >prix</label>
+                                    <input type="number" className="form-control" id="prixmateriau"  placeholder="prix du materiau"/>
+                            </div>
+
+                            <div className="col-md-4"> 
+                                    <label>date d'approvisionnement</label>
+                                    <input type="date" className="form-control" id="dateApprovisionnement"/>
+                            </div>
+                           
+                
+                        </form>
+                      
+                     </div>
+                     <div className="modal-footer row">
+                     <div className="col-12">
+                                <button type="submit" className="btn btn-primary"  data-dismiss="modal" onClick={(event) => createMateriaux(event)}>Save</button>
+                    </div>
+                       <div className='col'>
+                           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                       </div>
+                     </div>
+                   </div>
+               
+                 </div>
+               </div>
+           }
+           
+           {
+               <div id="updatemateriau" className="modal fade" role="dialog">
+                 <div className="modal-dialog">
+                   
+                   <div className="modal-content">
+                     <div className="modal-header">
+                       <span style={{display:"none"}}>&times;</span>
+                       <h2 style={{textAlign:"center",marginTop:"1%"}}>MODIFIER LE MATERIAU {itemToUpdate['nom']} </h2> 
+                     </div>
+                     <div className="modal-body">
+                        <form  className="row g-3" >
+                            <div className="col-md-4">
+                                    <label >Nom</label>
+                                    <input type="text" defaultValue={itemToUpdate['nom']} className="form-control" id="nommateriauupdate"  placeholder="nom du materiau"/>
+                            </div>
+                            <div className="col-md-4">
+                                <label >quantite</label>
+                                <input type="number" id="quantitemateriauupdate" className="form-control" placeholder="quantité du materiau"/>
+                                
+                            </div>
+                            <div className="col-md-4">
+                                <label >Unite</label>
+                                <input type="text" id="unitemateriauupdate" className="form-control"  placeholder="prix unitaire"/>
+                            </div>
+                            <div className="col-md-4">
+                                <label >prix</label>
+                                <input  type="number" className="form-control" id="prixmateriauupdate" placeholder="prix du materiau"/>
+                                
+                            </div>
+                            <div className="col-md-4"> 
+                                <label>date d'approvisionnement</label>
+                                <input  type="date" className="form-control" id="datemateriauupdate" placeholder="date d'approvisionnement"/>
+                            </div>
+                              
+                        </form>
+                      
+                     </div>
+                     <div className="modal-footer row">
+                        <div className="col-12">
+                                <button type="submit" className="btn btn-primary"  onClick={(event) => updateMateriau(event)}>Save</button>
+                        </div> 
+                       <div className='col'>
+                           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                       </div>
+                     </div>
+                   </div>
+               
+                 </div>
+               </div>
+           }
            
                      
     </div>
 );
 }
-export default ListMateriau;
+export default Materiaux;

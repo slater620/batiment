@@ -37,9 +37,7 @@ function Home(){
                                 <Workspace  setTacheList={ setTacheList } tacheList={tacheList}  commandeList={commandeList} setCommandeList={ setCommandeList } setMateriauList={ setMateriauList } materiauList={ materiauList} setMaterielList={ setMaterielList } materielList={ materielList} itemData={ itemData } setItemData={setItemData} projetList ={projetList} setProjetList={setProjetList} setItemToUpdate={ setItemToUpdate } itemToUpdate={ itemToUpdate } spaceName= {spaceName}  setSpaceName={setSpaceName} />
                             </div>
                         </div>
-        
                     </div>
-        
                 </div>
             )
     }

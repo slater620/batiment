@@ -1,6 +1,6 @@
-import { API_URL } from '../authentification/Signup';
+import { API_URL } from '../Components/Signup';
 import {useState} from 'react'
-import "./list.css"
+//import "./list.css"
 
 function ListMateriel({setSpaceName,spaceName,itemToUpdate,setItemToUpdate ,setItemData,itemData, materielList,setMaterielList}){
 
