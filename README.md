@@ -5,6 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Available Scripts
 
 In the project directory, you can run:
+![Screenshot from 2023-05-25 03-33-23](https://github.com/slater620/batiment/assets/81989373/4f717fb9-3192-41c3-9d02-395f1ef50e76)
 
 ### `npm start`
 
